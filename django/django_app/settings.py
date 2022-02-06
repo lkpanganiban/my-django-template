@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 import os
 from pathlib import Path
 
+from .log_formatter import CustomisedJSONFormatter
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -160,8 +162,8 @@ LOGGING = {
         'version': 1,
         'disable_existing_loggers': False,
         'formatters': {
-            'default_formatter': {
-                'format': '%(asctime)s - %(filename)s (%(lineno)d) - %(levelname)s - %(message)s'
+            'json': {
+                '()': CustomisedJSONFormatter
             }
         },
         'handlers': {
@@ -171,7 +173,7 @@ LOGGING = {
                 'filename': '/var/log/django-app/app.log',
                 'maxBytes': 1024 * 1024 * 20,  # 20 MB,
                 'backupCount': 2,
-                'formatter': 'default_formatter',
+                'formatter': 'json',
             },
             'requestlogs_to_file': {
                 'level': 'INFO',
