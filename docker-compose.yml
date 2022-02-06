@@ -1,0 +1,52 @@
+version: '3.7'
+
+services:
+  app_1:
+    container_name: app1
+    build:
+      context: ./django
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./django:/usr/src/app/
+    command: python manage.py runserver 0.0.0.0:8000
+    env_file:
+      - ./.env
+    depends_on:
+      - app_db
+      - redis_db
+  app_1_worker:
+    build: ./django
+    container_name: app1worker
+    command: celery -A django_app worker --loglevel=INFO
+    depends_on:
+      - app_1
+      - redis_db
+    env_file:
+      - ./.env
+    volumes:
+      - ./django/:/usr/src/app/
+  redis_db:
+    container_name: redis_db
+    image: "redis:alpine"
+    volumes:
+      - redis_data:/data
+  app_db:
+    container_name: app_db
+    image: postgres:13.5-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - ./.env-db
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus
+    volumes:
+      - ./prometheus/:/etc/prometheus/
+    ports:
+      - "9090:9090"
+
+volumes:
+  postgres_data:
+  redis_data:
