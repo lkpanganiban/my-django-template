@@ -39,9 +39,16 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'django_prometheus',
+]
 
+CORE_APPS = [
     'apps.core.users',
 ]
+
+PLUGIN_APPS = []
+CUSTOM_APPS = []
+
+INSTALLED_APPS = INSTALLED_APPS + CORE_APPS + CUSTOM_APPS + PLUGIN_APPS
 
 MIDDLEWARE = [
     'django_prometheus.middleware.PrometheusBeforeMiddleware',
@@ -146,3 +153,48 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Logging
+
+LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'formatters': {
+            'default_formatter': {
+                'format': '%(asctime)s - %(filename)s (%(lineno)d) - %(levelname)s - %(message)s'
+            }
+        },
+        'handlers': {
+            'default': {
+                'level': 'DEBUG',
+                'class': 'logging.handlers.RotatingFileHandler',
+                'filename': '/var/log/django-app/app.log',
+                'maxBytes': 1024 * 1024 * 20,  # 20 MB,
+                'backupCount': 2,
+                'formatter': 'default_formatter',
+            },
+            'requestlogs_to_file': {
+                'level': 'INFO',
+                'class': 'logging.handlers.RotatingFileHandler',
+                'maxBytes': 1024 * 1024 * 20,  # 20 MB,
+                'backupCount': 2,
+                'filename': '/var/log/django-app/requestlogs.log',
+            }
+        },
+        'root': {
+            'handlers': ['default'],
+            'level': 'DEBUG'
+        },
+        'loggers': {
+            '': {
+                'handlers': ['default'],
+                'level': 'DEBUG',
+                'propagate': True,
+            },
+            'requestlogs': {
+                'handlers': ['requestlogs_to_file'],
+                'level': 'INFO',
+                'propagate': False,
+            },
+        }
+    }
