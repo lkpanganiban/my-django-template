@@ -29,3 +29,10 @@ class Profile(models.Model):
     
     def add_login_count(self):
         self.login_count += 1
+
+    @property
+    def is_expired(self):
+        days = (self.account_expiry - datetime.now(timezone.utc)).days
+        if days < 0:
+            return True
+        return False
