@@ -31,6 +31,9 @@ class Files(models.Model):
     def __str__(self):
         return str(self.id)
     
+    def get_owner(self):
+        return self.owner.id
+
     def save(self, *args, **kwargs):
         self.name = self.location.name
         self.file_type = self.location.path.split('.')[-1]

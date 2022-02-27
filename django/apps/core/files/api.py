@@ -13,7 +13,6 @@ class FilesUploadView(APIView):
     def post(self, request, *args, **kwargs):
         request.data["owner"] = self.request.user.id
         file_serializer = FilesSerializer(data=request.data)
-        
         if file_serializer.is_valid():
             file_serializer.save()
             return Response(file_serializer.data, status=status.HTTP_201_CREATED)

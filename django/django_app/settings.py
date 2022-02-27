@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'rest_framework_json_api',
     'rest_framework.authtoken',
     'django_prometheus',
+    'django_elasticsearch_dsl',
 ]
 
 CORE_APPS = [
@@ -272,3 +273,10 @@ SITE_URL = "http://localhost:8000"
 DEFAULT_FILE_STORAGE = os.environ.get('DEFAULT_FILE_STORAGE', 'django.core.files.storage.FileSystemStorage')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'files')
 MEDIA_URL = '/uploaded/'
+
+# ELASTICSEARCH
+ELASTICSEARCH_DSL={
+    'default': {
+        'hosts': os.environ.get('ELASTICSEARCH_URL', 'localhost:9200')
+    },
+}
