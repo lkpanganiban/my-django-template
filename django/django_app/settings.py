@@ -46,6 +46,7 @@ INSTALLED_APPS = [
 
 CORE_APPS = [
     'apps.core.users',
+    'apps.core.files'
 ]
 
 PLUGIN_APPS = []
@@ -266,3 +267,8 @@ EMAIL_REGISTRATION_BCC = ""
 
 # SITE_URL
 SITE_URL = "http://localhost:8000"
+
+# STORAGE MECHANISM
+DEFAULT_FILE_STORAGE = os.environ.get('DEFAULT_FILE_STORAGE', 'django.core.files.storage.FileSystemStorage')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'files')
+MEDIA_URL = '/uploaded/'
