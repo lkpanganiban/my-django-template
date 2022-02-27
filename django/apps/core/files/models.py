@@ -17,7 +17,7 @@ class Files(models.Model):
     name = models.CharField(max_length=999, default="file 1")
     file_type = models.CharField(max_length=999, default="binary")
     file_size = models.IntegerField(default=0)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     location = models.FileField(upload_to='files')
     description = models.TextField(null=True, blank=True)
     is_shareable = models.BooleanField(default=False)
@@ -32,8 +32,10 @@ class Files(models.Model):
         return str(self.id)
     
     def save(self, *args, **kwargs):
-        print(self.location)
+        self.name = self.location.name
         self.file_type = self.location.path.split('.')[-1]
         self.file_size = self.location.size
+        new_name = str(self.id) + f'.{self.file_type}'
+        self.location.name = new_name
         super(Files, self).save(*args, **kwargs)
 

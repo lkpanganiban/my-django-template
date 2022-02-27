@@ -3,4 +3,4 @@ __pycache__
 .vscode
 .env.dev
 .env-db.dev
-files/files/
+django/files/files/

@@ -28,6 +28,7 @@ urlpatterns = [
     path('users/', include('apps.core.users.urls')),
     path('auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
+    path('files/', include('apps.core.files.urls')),
 
     path('auth/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('', include('django_prometheus.urls')),
