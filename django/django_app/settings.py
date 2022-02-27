@@ -201,6 +201,24 @@ LOGGING = {
         }
     }
 
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+
+
+
 # REST FRAMEWORK
 REST_FRAMEWORK = {
     'PAGE_SIZE': 50,
@@ -229,3 +247,22 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_METADATA_CLASS': 'rest_framework_json_api.metadata.JSONAPIMetadata',
 }
+
+# EMAIL SETTINGS via Sendgrid
+EMAIL_HOST = os.getenv("SENDGRID_HOST", "smtp.sendgrid.net")
+EMAIL_REST_HOST = os.getenv('SENDGRID_REST_HOST', "https://api.sendgrid.com/v3/mail/send")
+EMAIL_HOST_USER = os.getenv("SENDGRID_HOST_USER", "apikey")
+EMAIL_HOST_PASSWORD = os.getenv("SENDGRID_HOST_PASSWORD", "")
+EMAIL_PORT = os.getenv("SENDGRID_PORT", 587)
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+DEFAULT_FROM_EMAIL = os.getenv("ADMIN_EMAIL", "admin@sample.com")
+
+# REGISTRATION SETTINGS
+EMAIL_REGISTRATION_TEMPLATE = 'registration/registration_success'
+EMAIL_REGISTRATION_SUBJECT = f'User Registration: You have been registered to Django App'
+EMAIL_REGISTRATION_BCC = ""
+
+# SITE_URL
+SITE_URL = "http://localhost:8000"

@@ -24,7 +24,7 @@ class Migration(migrations.Migration):
                 ('create_date', models.DateTimeField(auto_now_add=True)),
                 ('update_date', models.DateTimeField(auto_now=True)),
                 ('login_count', models.IntegerField(default=0)),
-                ('account_expiry', models.DateTimeField(default=apps.core.users.models.get_time_now)),
+                ('account_expiry', models.DateTimeField(default=apps.core.users.models.get_account_expiry)),
                 ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
             options={

@@ -19,6 +19,9 @@ A reference repo for my Django Projects
 2. Permissions
 3. Login with JWT
 
+# Initial Setup
+1. Create a `.env.dev` and `.env-db.dev` files. Use the `.env` and `.env-db` as reference
+
 ## Setup for Operations
 1. Build a Dockerfile for dev and production
 2. Create a docker-compose.yml for dev and production

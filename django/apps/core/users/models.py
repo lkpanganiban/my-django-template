@@ -4,7 +4,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-def get_time_now():
+def get_account_expiry():
     return datetime.now(timezone.utc) + timedelta(days=30)
 
 
@@ -18,7 +18,7 @@ class Profile(models.Model):
     create_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)
     login_count = models.IntegerField(default=0)
-    account_expiry = models.DateTimeField(default=get_time_now, editable=True)
+    account_expiry = models.DateTimeField(default=get_account_expiry, editable=True)
 
     class Meta:
         verbose_name_plural = "Profiles"

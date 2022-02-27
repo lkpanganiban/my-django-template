@@ -1,3 +1,5 @@
 env
 __pycache__
 .vscode
+.env.dev
+.env-db.dev
