@@ -43,11 +43,12 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'django_prometheus',
     'django_elasticsearch_dsl',
+    'django_elasticsearch_dsl_drf',
 ]
 
 CORE_APPS = [
     'apps.core.users',
-    'apps.core.files'
+    'apps.core.files',
 ]
 
 PLUGIN_APPS = []
@@ -231,7 +232,6 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS':
         'rest_framework_json_api.pagination.JsonApiPageNumberPagination',
     'DEFAULT_PARSER_CLASSES': (
-        'rest_framework_json_api.parsers.JSONParser',
         'rest_framework.parsers.JSONParser',
         'rest_framework.parsers.FormParser',
         'rest_framework.parsers.MultiPartParser',
@@ -247,7 +247,7 @@ REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework_json_api.renderers.JSONRenderer',
     ),
-    'DEFAULT_METADATA_CLASS': 'rest_framework_json_api.metadata.JSONAPIMetadata',
+    # 'DEFAULT_METADATA_CLASS': 'rest_framework_json_api.metadata.JSONAPIMetadata',
 }
 
 # EMAIL SETTINGS via Sendgrid

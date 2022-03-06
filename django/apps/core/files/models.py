@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -8,10 +8,9 @@ def get_time_now():
     return datetime.now(timezone.utc)
 
 
-
 class Files(models.Model):
     '''
-    expand this table to add more info for the user like address, job, role, etc.
+    list of uploaded files and it's metadata.
     '''
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=999, default="file 1")
@@ -23,6 +22,7 @@ class Files(models.Model):
     is_shareable = models.BooleanField(default=False)
     create_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)
+    tags = models.JSONField(null=True, blank=True)
 
     class Meta:
         verbose_name_plural = "Files"
@@ -32,13 +32,14 @@ class Files(models.Model):
         return str(self.id)
     
     def get_owner(self):
-        return self.owner.id
+        return self.owner.email
 
     def save(self, *args, **kwargs):
-        self.name = self.location.name
-        self.file_type = self.location.path.split('.')[-1]
-        self.file_size = self.location.size
-        new_name = str(self.id) + f'.{self.file_type}'
-        self.location.name = new_name
+        if kwargs.get('force_insert') is not None: # handle first insert to db
+            self.name = self.location.name
+            self.file_type = self.location.path.split('.')[-1]
+            self.file_size = self.location.size
+            new_name = str(self.id) + f'.{self.file_type}'
+            self.location.name = new_name
         super(Files, self).save(*args, **kwargs)
 
