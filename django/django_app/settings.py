@@ -44,6 +44,10 @@ INSTALLED_APPS = [
     'django_prometheus',
     'django_elasticsearch_dsl',
     'django_elasticsearch_dsl_drf',
+    # tailwind app
+    'tailwind',
+    'theme',
+    'django_browser_reload',
 ]
 
 CORE_APPS = [
@@ -64,27 +68,12 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'django_browser_reload.middleware.BrowserReloadMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django_prometheus.middleware.PrometheusAfterMiddleware',
 ]
 
 ROOT_URLCONF = 'django_app.urls'
-
-TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
-        },
-    },
-]
 
 WSGI_APPLICATION = 'django_app.wsgi.application'
 
@@ -154,7 +143,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = 'static/'
-
+STATICFILES_DIRS = [
+   os.path.join(BASE_DIR, 'theme/static/')
+]
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
@@ -220,7 +211,8 @@ TEMPLATES = [
     },
 ]
 
-
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'login' 
 
 # REST FRAMEWORK
 REST_FRAMEWORK = {
@@ -262,7 +254,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 DEFAULT_FROM_EMAIL = os.getenv("ADMIN_EMAIL", "admin@sample.com")
 
 # REGISTRATION SETTINGS
-EMAIL_REGISTRATION_TEMPLATE = 'registration/registration_success'
+EMAIL_REGISTRATION_TEMPLATE = 'email/registration/registration_success'
 EMAIL_REGISTRATION_SUBJECT = f'User Registration: You have been registered to Django App'
 EMAIL_REGISTRATION_BCC = ""
 
@@ -280,3 +272,6 @@ ELASTICSEARCH_DSL={
         'hosts': os.environ.get('ELASTICSEARCH_URL', 'localhost:9200')
     },
 }
+
+# TAILWIND
+TAILWIND_APP_NAME = 'theme'

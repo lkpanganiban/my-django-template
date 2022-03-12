@@ -22,15 +22,19 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
     TokenVerifyView
 )
+from django.views.generic.base import TemplateView # new
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # path('accounts/', include('django.contrib.auth.urls')), 
     path('users/', include('apps.core.users.urls')),
     path('auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
-    path('files/', include('apps.core.files.urls')),
+    path('auth/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
     path('auth/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('', include('django_prometheus.urls')),
+    path('files/', include('apps.core.files.urls')),
+    path('stats/', include('django_prometheus.urls')),
+    path("__reload__/", include("django_browser_reload.urls")),
+    path('', TemplateView.as_view(template_name='pages/home.html'), name='home'), # new
 ]
 
 if settings.DEBUG:

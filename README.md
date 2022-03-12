@@ -21,6 +21,9 @@ A reference repo for my Django Projects
 
 # Initial Setup
 1. Create a `.env.dev` and `.env-db.dev` files. Use the `.env` and `.env-db` as reference
+2. Run `docker-compose up` to start the app.
+3. Login to `docker exec -it app1 sh`.
+4. Run `python manage.py tailwind start`
 
 ## Setup for Operations
 1. Build a Dockerfile for dev and production
@@ -33,6 +36,3 @@ A reference repo for my Django Projects
    - reference repo came from https://github.com/dotja/django-prometheus-docker
    - refer to the following link: https://www.youtube.com/watch?v=86js4POzTV4
 
-# Endpoints
-1. Users
-2. Files

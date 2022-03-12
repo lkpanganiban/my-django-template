@@ -1,25 +1,15 @@
-<!DOCTYPE html>
+{% load tailwind_tags %}
+<!DOCTYPE html lang="en">
 <html>
-    <head>
-    <title>{% block title %}Django App{% endblock %}</title>
-    <!-- <link rel="stylesheet" type="text/css" href="" /> -->
-    <style>
-        {% block internalCSS %} {% endblock %}
-    </style>
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}Django Auth Tutorial{% endblock %}</title>
+  {% tailwind_preload_css %}
+  {% tailwind_css %}
 </head>
+  <body class="bg-white font-family-karla h-screen">
 
-<body>
-    <div id="container">
-        {% block content %}
-        {% endblock %}
-    </div>
-    <hr/>
-    <div id="footer">
-    <p>
-        This is a system generated email. <br/>
-        For problems, please contact <a href="mailto:admin@sample.com">admin@sample.com</a>
-    </p>
-    <p><i>Django App Team</i></p>
-    </div>
-</body>
+      {% block content %}
+      {% endblock %}
+  </body>
 </html>

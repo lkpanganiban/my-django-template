@@ -6,7 +6,7 @@ ENV PYTHONUNBUFFERED 1
 ENV LIBRARY_PATH=/lib:/usr/lib
 
 RUN apk update \
-    && apk add libpq postgresql-dev gcc python3-dev musl-dev jpeg-dev zlib-dev curl build-base libressl-dev libffi-dev geos-dev
+    && apk add libpq postgresql-dev gcc python3-dev musl-dev jpeg-dev zlib-dev curl build-base libressl-dev libffi-dev geos-dev nodejs npm
 
 # set work directory
 WORKDIR /usr/src/app
