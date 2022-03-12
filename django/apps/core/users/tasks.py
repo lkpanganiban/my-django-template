@@ -30,9 +30,9 @@ def send_registration_email(first_name, account_expiry, user_email):
 
 @shared_task
 def check_expiry():
-    print('checking expired accounts!')
+    logger.info('checking expired accounts!')
     for p in Profile.objects.filter(user__is_active=True, user__is_staff=False):
         if p.is_expired:
             p.user.is_active = False
             p.user.save()
-    print('checking expired accounts done!')
+    logger.info('checking expired accounts done!')

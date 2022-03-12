@@ -25,7 +25,7 @@ services:
       - app_1
       - redis_db
     env_file:
-      - ./.env
+      - ./.env.dev
     volumes:
       - ./django/:/usr/src/app/
   redis_db:

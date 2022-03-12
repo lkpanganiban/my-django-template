@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 import os
 from pathlib import Path
+from pickle import FALSE
 
 from .log_formatter import CustomisedJSONFormatter
 
@@ -25,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DEBUG", True)
 
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 
@@ -247,11 +248,12 @@ EMAIL_HOST = os.getenv("SENDGRID_HOST", "smtp.sendgrid.net")
 EMAIL_REST_HOST = os.getenv('SENDGRID_REST_HOST', "https://api.sendgrid.com/v3/mail/send")
 EMAIL_HOST_USER = os.getenv("SENDGRID_HOST_USER", "apikey")
 EMAIL_HOST_PASSWORD = os.getenv("SENDGRID_HOST_PASSWORD", "")
-EMAIL_PORT = os.getenv("SENDGRID_PORT", 587)
-EMAIL_USE_TLS = True
-EMAIL_USE_SSL = False
+EMAIL_PORT = os.getenv("SENDGRID_PORT", 465)
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 DEFAULT_FROM_EMAIL = os.getenv("ADMIN_EMAIL", "admin@sample.com")
+EMAIL_SEND = os.getenv("EMAIL_SEND", "False")
 
 # REGISTRATION SETTINGS
 EMAIL_REGISTRATION_TEMPLATE = 'email/registration/registration_success'
