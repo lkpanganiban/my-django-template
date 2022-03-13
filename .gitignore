@@ -2,5 +2,7 @@ env
 __pycache__
 .vscode
 .env.dev
+.env.prod
 .env-db.dev
+.env-db.prod
 django/files/files/

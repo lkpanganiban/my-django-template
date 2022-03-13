@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 import os
+from distutils import util
 from pathlib import Path
 from pickle import FALSE
 
@@ -26,8 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DEBUG", True)
-
+DEBUG = util.strtobool(os.environ.get("DEBUG", "True"))
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 
 # Application definition
@@ -142,6 +142,8 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
+if not DEBUG:
+    STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [
@@ -253,7 +255,7 @@ EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 DEFAULT_FROM_EMAIL = os.getenv("ADMIN_EMAIL", "admin@sample.com")
-EMAIL_SEND = os.getenv("EMAIL_SEND", "False")
+EMAIL_SEND = util.strtobool(os.getenv("EMAIL_SEND", "False"))
 
 # REGISTRATION SETTINGS
 EMAIL_REGISTRATION_TEMPLATE = 'email/registration/registration_success'

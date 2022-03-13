@@ -1,0 +1,75 @@
+version: '3.7'
+
+services:
+  app_nginx:
+    build: ./nginx
+    volumes:
+      - static_data_prod:/home/app/web/static
+    restart: always
+    ports:
+      - 1337:80
+    depends_on:
+      - app_1
+  app_1:
+    container_name: app1
+    image: django-app-template:latest
+    build:
+      context: ./django
+      dockerfile: Dockerfile.prod
+    command: gunicorn django_app.wsgi:application --limit-request-line 8190  --workers 10 --bind 0.0.0.0:8000 --timeout 330
+    expose:
+      - 8000
+    volumes:
+      - static_data_prod:/home/app/web/static
+      - log_data_prod:/var/log/django-app
+    env_file:
+      - ./.env.prod
+    depends_on:
+      - app_db
+      - redis_db
+  app_1_worker:
+    image: django-app-template:latest
+    container_name: app1worker
+    command: celery -A django_app worker --loglevel=INFO
+    depends_on:
+      - app_1
+      - redis_db
+    env_file:
+      - ./.env.prod
+  redis_db:
+    container_name: redis_db
+    image: "redis:alpine"
+    volumes:
+      - redis_data_prod:/data
+  app_db:
+    container_name: app_db
+    image: postgres:13.5-alpine
+    volumes:
+      - postgres_data_prod:/var/lib/postgresql/data/
+    env_file:
+      - ./.env-db.prod
+
+  elasticsearch:
+    build:
+      context: docker-elk/elasticsearch/
+      args:
+        ELK_VERSION: $ELK_VERSION
+    volumes:
+      - ./docker-elk/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro,z
+      - elasticsearch:/usr/share/elasticsearch/data:z
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+      ELASTIC_PASSWORD: changeme
+      # Use single node discovery in order to disable production mode and avoid bootstrap checks.
+      # see: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
+      discovery.type: single-node
+
+volumes:
+  postgres_data_prod:
+  redis_data_prod:
+  log_data_prod:
+  elasticsearch:
+  static_data_prod:
