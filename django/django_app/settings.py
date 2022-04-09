@@ -108,6 +108,10 @@ CELERY_RESULT_BACKEND =  CELERY_BROKER
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_ROUTES = {
+    'apps.core.files.tasks.long_task': {'queue': 'long_queue'},
+    'apps.core.users.tasks.*': {'queue': 'short_queue'}
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators

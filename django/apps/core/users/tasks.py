@@ -36,3 +36,8 @@ def check_expiry():
             p.user.is_active = False
             p.user.save()
     logger.info('checking expired accounts done!')
+
+@shared_task
+def short_task():
+    logger.info('shared task start')
+    logger.info('shared task end')

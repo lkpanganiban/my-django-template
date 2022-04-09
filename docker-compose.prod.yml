@@ -30,7 +30,7 @@ services:
   app_1_worker:
     image: django-app-template:latest
     container_name: app1worker
-    command: celery -A django_app worker --loglevel=INFO
+    command: celery -A django_app worker -n 3 --loglevel=INFO
     depends_on:
       - app_1
       - redis_db
