@@ -27,10 +27,19 @@ services:
     depends_on:
       - app_db
       - redis_db
-  app_1_worker:
+  applongtaskworker:
     image: django-app-template:latest
-    container_name: app1worker
-    command: celery -A django_app worker -n 3 --loglevel=INFO
+    container_name: applongtaskworker
+    command: celery -A django_app worker -Q long_queue -c 3 --loglevel=INFO
+    depends_on:
+      - app_1
+      - redis_db
+    env_file:
+      - ./.env.prod
+  appsharedtaskworker:
+    image: django-app-template:latest
+    container_name: appsharedtaskworker
+    command: celery -A django_app worker -c 3 --loglevel=INFO
     depends_on:
       - app_1
       - redis_db
@@ -41,6 +50,18 @@ services:
     image: "redis:alpine"
     volumes:
       - redis_data_prod:/data
+  app_flower:
+    container_name: api_task_monitor
+    image: mher/flower:0.9.7
+    environment:
+      - CELERY_BROKER_URL=redis://redis_db:6379/0
+      - FLOWER_PORT=8888
+      - FLOWER_BASIC_AUTH=username:password
+    depends_on:
+      - appsharedtaskworker
+      - applongtaskworker
+    ports:
+      - 8888:8888
   app_db:
     container_name: app_db
     image: postgres:13.5-alpine

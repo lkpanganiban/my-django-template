@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'django_prometheus',
     'django_elasticsearch_dsl',
     'django_elasticsearch_dsl_drf',
+    'oauth2_provider',
+    'corsheaders',
     # tailwind app
     'tailwind',
     'theme',
@@ -65,6 +67,7 @@ MIDDLEWARE = [
     'django_prometheus.middleware.PrometheusBeforeMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -110,7 +113,6 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_ROUTES = {
     'apps.core.files.tasks.long_task': {'queue': 'long_queue'},
-    'apps.core.users.tasks.*': {'queue': 'short_queue'}
 }
 
 # Password validation
@@ -146,6 +148,9 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
+if DEBUG:
+    CORS_ORIGIN_ALLOW_ALL = True
+
 if not DEBUG:
     STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 

@@ -17,10 +17,10 @@ services:
     depends_on:
       - app_db
       - redis_db
-  app_short_task_worker:
+  app_shared_task_worker:
     build: ./django
-    container_name: app1shorttaskworker
-    command: celery -A django_app worker -Q short_queue -c 2 --loglevel=INFO
+    container_name: appsharedtaskworker
+    command: celery -A django_app worker -c 2 --loglevel=INFO
     depends_on:
       - app_1
       - redis_db
@@ -30,7 +30,7 @@ services:
       - ./django/:/usr/src/app/
   app_long_task_worker:
     build: ./django
-    container_name: app1longtaskworker
+    container_name: applongtaskworker
     command: celery -A django_app worker -Q long_queue -c 2 --loglevel=INFO
     depends_on:
       - app_1
@@ -51,16 +51,18 @@ services:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
       - ./.env-db.dev
-
   app_flower:
     container_name: api_task_monitor
     image: mher/flower:0.9.7
     environment:
       - CELERY_BROKER_URL=redis://redis_db:6379/0
       - FLOWER_PORT=8888
+      - FLOWER_BASIC_AUTH=username:password
     ports:
       - 8888:8888
-
+    depends_on:
+      - app_shared_task_worker
+      - app_long_task_worker
   prometheus:
     container_name: prometheus
     image: prom/prometheus

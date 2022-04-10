@@ -9,3 +9,9 @@ def long_task():
     logger.info('this is a long task')
     time.sleep(3600)
     logger.info('this is a long task')
+
+@shared_task
+def other_task():
+    logger.info('this is a other task')
+    time.sleep(3600)
+    logger.info('this is a other task')
