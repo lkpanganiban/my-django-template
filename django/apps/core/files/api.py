@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from rest_framework.parsers import FileUploadParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -9,9 +10,25 @@ from django_elasticsearch_dsl_drf.filter_backends import (
     FilteringFilterBackend
 )
 from django_elasticsearch_dsl_drf.viewsets import BaseDocumentViewSet
-from .models import Files
+from .models import Files, FileSet
 from .documents import FilesDocument
-from .serializers import FilesSerializer, FilesDocumentSerializer
+from .serializers import FilesSerializer, FilesDocumentSerializer, FileSetSerializer
+
+
+class FileSetViewset(viewsets.ModelViewSet):
+    """
+    A viewset that provides the standard actions of Projects
+    """
+    queryset = FileSet.objects.all()
+    serializer_class = FileSetSerializer
+    filterset_fields = ['id']
+
+    def get_queryset(self):
+        qs = self.queryset
+        if self.request.user.is_superuser:
+            return qs
+        else:
+            return qs.filter(owner__in=self.request.user.id)
 
 
 class FilesUploadView(APIView):
@@ -51,6 +68,7 @@ class FileSearchViewset(BaseDocumentViewSet):
         'name',
         'file_type',
         'owner',
+        'description'
     )
     
     ordering_fields = {
@@ -64,5 +82,6 @@ class FileSearchViewset(BaseDocumentViewSet):
         'name': 'name',
         'file_type': 'file_type',
         'owner': 'owner',
-        'location': 'location'
+        'location': 'location',
+        'file_set': 'file_set'
     }

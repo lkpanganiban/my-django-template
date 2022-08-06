@@ -12,6 +12,10 @@ class FilesDocument(Document):
     )
     file_type = fields.KeywordField()
     file_size = fields.IntegerField()
+    description = fields.TextField()
+    file_set = fields.TextField(
+        attr = 'get_file_set',
+    )
 
     class Index:
         name = 'files'
