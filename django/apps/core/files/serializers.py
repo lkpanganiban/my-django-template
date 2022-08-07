@@ -10,6 +10,7 @@ class FileSetSerializer(serializers.ModelSerializer):
         model = FileSet
         fields = "__all__"
 
+
 class FilesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Files

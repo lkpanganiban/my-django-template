@@ -18,9 +18,7 @@ class FileSet(models.Model):
     class Meta:
         verbose_name_plural = "File Sets"
         ordering = ["-create_date"]
-        permissions = (
-            ("can_merge_sets", "Can merge sets"),
-        )
+        permissions = (("can_merge_sets", "Can merge sets"),)
 
     def __str__(self):
         return str(self.id)

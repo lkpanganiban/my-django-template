@@ -7,7 +7,7 @@ from django_elasticsearch_dsl_drf.filter_backends import (
     DefaultOrderingFilterBackend,
     CompoundSearchFilterBackend,
     OrderingFilterBackend,
-    FilteringFilterBackend
+    FilteringFilterBackend,
 )
 from django_elasticsearch_dsl_drf.viewsets import BaseDocumentViewSet
 
@@ -21,17 +21,13 @@ class FileSetViewset(viewsets.ModelViewSet):
     """
     A viewset that provides the standard actions of Projects
     """
+
     queryset = FileSet.objects.all()
     serializer_class = FileSetSerializer
-    filterset_fields = ['id']
+    filterset_fields = ["id"]
     permission_classes = (permissions.IsAuthenticated,)
 
-    @action(
-        methods=['POST'],
-        detail=False,
-        url_path='merge',
-        url_name='set-merge'
-    )
+    @action(methods=["POST"], detail=False, url_path="merge", url_name="set-merge")
     def merge_file_sets(self, request, **kwargs):
         set_list = request.data.get("set_list").split(",")
         detail = merge_sets(set_list)
@@ -72,7 +68,7 @@ class FileSearchViewset(BaseDocumentViewSet):
     document = FilesDocument
     serializer_class = FilesDocumentSerializer
     permission_classes = (permissions.IsAuthenticated,)
-    lookup_field = 'id'
+    lookup_field = "id"
     renderer_classes = [renderers.JSONRenderer]
 
     filter_backends = [
@@ -81,24 +77,16 @@ class FileSearchViewset(BaseDocumentViewSet):
         DefaultOrderingFilterBackend,
         CompoundSearchFilterBackend,
     ]
-    search_fields = (
-        'name',
-        'file_type',
-        'owner',
-        'description'
-    )
-    
-    ordering_fields = {
-        'owner': 'owner.raw',
-        'file_type': 'file_type.raw'
-    }
-    ordering = ('_score',)
+    search_fields = ("name", "file_type", "owner", "description")
+
+    ordering_fields = {"owner": "owner.raw", "file_type": "file_type.raw"}
+    ordering = ("_score",)
 
     filter_fields = {
-        'id': 'id',
-        'name': 'name',
-        'file_type': 'file_type',
-        'owner': 'owner',
-        'location': 'location',
-        'file_set': 'file_set'
+        "id": "id",
+        "name": "name",
+        "file_type": "file_type",
+        "owner": "owner",
+        "location": "location",
+        "file_set": "file_set",
     }

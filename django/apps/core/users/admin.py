@@ -8,15 +8,29 @@ class ProfileInline(admin.StackedInline):
 
     model = Profile
     can_delete = False
-    verbose_name_plural = 'Profile'
+    verbose_name_plural = "Profile"
+
 
 class UserAdmin(BaseUserAdmin):
-    list_display = ('id', 'email', 'is_superuser', 'is_staff', 'is_active',)
+    list_display = (
+        "id",
+        "email",
+        "is_superuser",
+        "is_staff",
+        "is_active",
+    )
     inlines = (ProfileInline,)
 
+
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ('id','user', 'login_count','account_expiry', 'is_active',)
-    list_filter = ('user__is_active',)
+    list_display = (
+        "id",
+        "user",
+        "login_count",
+        "account_expiry",
+        "is_active",
+    )
+    list_filter = ("user__is_active",)
 
     @staticmethod
     def is_active(obj):
