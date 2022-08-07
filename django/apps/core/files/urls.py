@@ -4,9 +4,9 @@ from rest_framework.routers import DefaultRouter
 from .api import FileSearchViewset, FilesUploadView, FileViewset, FileSetViewset
 
 router = DefaultRouter()
-router.register(r'search', FileSearchViewset, basename='files-search')
-router.register(r'set', FileSetViewset, basename='set')
-router.register(r'', FileViewset, basename='files')
+router.register(r'api/search', FileSearchViewset, basename='files-search')
+router.register(r'api/set', FileSetViewset, basename='set')
+router.register(r'api', FileViewset, basename='files')
 
 urlpatterns = [
     path('upload/', FilesUploadView.as_view(), name='file-upload'),

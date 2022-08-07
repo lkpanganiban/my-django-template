@@ -1,7 +1,7 @@
-from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APITestCase
 from rest_framework.authtoken.models import Token
+from django.contrib.auth.models import Group
 from apps.core.users.models import User, Profile
 from apps.core.users.serializers import RegisterSerializer
 
@@ -37,5 +37,10 @@ class UserAppTest(APITestCase):
         data["email"] = "hello1@example.com"
         response = self.client.post(register_url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        u = User.objects.filter().count()
-        self.assertEqual(u, 2)
+        u = User.objects.filter()
+        u_count = u.count()
+        self.assertEqual(u_count, 2)
+        # u_g = u[1:]
+        # groups_list = u_g[0]
+        # g = Group.objects.filter(user__in=groups_list)
+        # print(g)

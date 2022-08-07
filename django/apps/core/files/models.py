@@ -55,7 +55,7 @@ class Files(models.Model):
         return self.owner.email
 
     def get_file_set(self):
-        return str(self.file.set.id)
+        return str(self.file_set.id)
 
     def has_group_access(self, group=None):
         return self.file_set.group_access.contains(group)
