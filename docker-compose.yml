@@ -63,13 +63,13 @@ services:
     depends_on:
       - app_shared_task_worker
       - app_long_task_worker
-  prometheus:
-    container_name: prometheus
-    image: prom/prometheus
-    volumes:
-      - ./prometheus/:/etc/prometheus/
-    ports:
-      - "9090:9090"
+  # prometheus:
+  #   container_name: prometheus
+  #   image: prom/prometheus
+  #   volumes:
+  #     - ./prometheus/:/etc/prometheus/
+  #   ports:
+  #     - "9090:9090"
 
   elasticsearch:
     build:
@@ -106,17 +106,17 @@ services:
     depends_on:
       - elasticsearch
 
-  kibana:
-    build:
-      context: docker-elk/kibana/
-      args:
-        ELK_VERSION: $ELK_VERSION
-    volumes:
-      - ./docker-elk/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro,z
-    ports:
-      - "5601:5601"
-    depends_on:
-      - elasticsearch
+  # kibana:
+  #   build:
+  #     context: docker-elk/kibana/
+  #     args:
+  #       ELK_VERSION: $ELK_VERSION
+  #   volumes:
+  #     - ./docker-elk/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro,z
+  #   ports:
+  #     - "5601:5601"
+  #   depends_on:
+  #     - elasticsearch
 
 volumes:
   postgres_data:

@@ -9,9 +9,10 @@ def get_account_expiry():
 
 
 class Profile(models.Model):
-    '''
+    """
     expand this table to add more info for the user like address, job, role, etc.
-    '''
+    """
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     organization = models.CharField(max_length=999, default="My Organization")
@@ -22,11 +23,11 @@ class Profile(models.Model):
 
     class Meta:
         verbose_name_plural = "Profiles"
-        ordering = ['-create_date']
+        ordering = ["-create_date"]
 
     def __str__(self):
         return str(self.user.email)
-    
+
     def add_login_count(self):
         self.login_count += 1
 
