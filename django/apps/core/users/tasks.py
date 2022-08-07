@@ -9,7 +9,7 @@ from .models import Profile
 logger = get_task_logger(__name__)
 
 
-def send_email_registrations(
+def _send_email_registrations(
     registration_subject, text_content, html_content, from_email, email_list, bcc_email
 ):
     msg = EmailMultiAlternatives(
@@ -36,7 +36,7 @@ def send_registration_email(first_name, account_expiry, user_email):
     }
     text_content = get_template(f"{registration_template}.txt").render(config_message)
     html_content = get_template(f"{registration_template}.html").render(config_message)
-    send_email_registrations(
+    _send_email_registrations(
         registration_subject,
         text_content,
         html_content,
