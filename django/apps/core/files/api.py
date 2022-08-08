@@ -43,6 +43,13 @@ class FileSetViewset(viewsets.ModelViewSet):
             request_user_group = self.request.user.groups.all()
             return qs.filter(group_access__in=request_user_group)
 
+    def destroy(self, request, *args, **kwargs):
+        qs_object = self.queryset
+        qs_id = self.kwargs["pk"]
+        fileset_object = qs_object.filter(id=qs_id, owner=self.request.user)
+        fileset_object.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class FilesUploadView(APIView):
     permission_classes = (permissions.IsAuthenticated,)

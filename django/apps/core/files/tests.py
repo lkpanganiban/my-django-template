@@ -87,3 +87,20 @@ class FileAppTest(APITestCase):
         empty_user_data = self._create_user("hello2@example.com")
         u = User.objects.get(email=empty_user_data["email"])
         self.assertFalse(file.has_group_access(u.groups.all()[0]))
+
+    def test_destroy_fileset(self):
+        for p in ["hello2@example.com", "hello3@example.com"]:
+            user_data = self._create_user(p)
+            set_data = self._create_file_set(user_data)
+            self._create_file(user_data, set_data.data)
+            self._create_file(user_data, set_data.data)
+            
+        file_set_url = "/files/api/set/"
+        response = self.client.get(file_set_url, format="json")
+        fs_id = response.json()["data"][0]["id"]
+        file_set_url = f"/files/api/set/{fs_id}/"
+        response = self.client.delete(file_set_url, format="json")
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(FileSet.objects.all().count(), 2)
+        self.assertEqual(Files.objects.all().count(), 4)
+
