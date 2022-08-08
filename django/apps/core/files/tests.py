@@ -28,8 +28,9 @@ class FileAppTest(APITestCase):
         return user_data
 
     def _create_file_set(self, user_data):
-        group = Group.objects.filter(user=User.objects.get(email=user_data["email"]))
-        set_data = {"group_access": [str(group.first().id)]}
+        user = User.objects.get(email=user_data["email"])
+        group = Group.objects.filter(user=user)
+        set_data = {"group_access": [str(group.first().id)], "owner": str(user.id)}
         file_set_serializer = FileSetSerializer(data=set_data)
         file_set_serializer.is_valid()
         file_set_serializer.save()

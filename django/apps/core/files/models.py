@@ -14,6 +14,10 @@ class FileSet(models.Model):
     update_date = models.DateTimeField(auto_now=True)
     tags = models.JSONField(null=True, blank=True)
     group_access = models.ManyToManyField(Group)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+
+    def get_owner(self):
+        return self.owner.email
 
     class Meta:
         verbose_name_plural = "File Sets"
