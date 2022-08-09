@@ -53,8 +53,8 @@ class Files(models.Model):
     def __str__(self):
         return str(self.id)
 
-    def get_owner(self):
-        return self.owner.email
+    # def get_owner(self):
+    #     return self.owner.email
 
     def get_file_set(self):
         return str(self.file_set.id)
@@ -67,6 +67,7 @@ class Files(models.Model):
             self.name = self.location.name
             self.file_type = self.location.path.split(".")[-1]
             self.file_size = self.location.size
+            self.owner = self.file_set.owner
             new_name = str(self.id) + f".{self.file_type}"
             self.location.name = new_name
         super(Files, self).save(*args, **kwargs)

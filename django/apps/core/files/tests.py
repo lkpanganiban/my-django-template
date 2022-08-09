@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from rest_framework.authtoken.models import Token
 from rest_framework.test import APIClient
-from apps.core.users.models import User, Profile
+from apps.core.users.models import User
 from apps.core.users.serializers import RegisterSerializer
 from .serializers import FileSetSerializer, FilesSerializer
 from .models import FileSet, Files
