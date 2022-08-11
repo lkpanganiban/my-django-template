@@ -31,8 +31,11 @@ django-tailwind==3.1.1
 djangorestframework==3.13.1
 djangorestframework-jsonapi==5.0.0
 djangorestframework-simplejwt==5.0.0
+drf-api-tracking==1.8.0
 elasticsearch==7.17.0
 elasticsearch-dsl==7.4.0
+fake-factory==9999.9.9
+Faker==10.0.0
 gunicorn==20.1.0
 idna==3.3
 inflection==0.5.1
@@ -44,6 +47,7 @@ jsonschema==4.4.0
 jwcrypto==1.0
 kombu==5.2.3
 MarkupSafe==2.1.0
+model-bakery==1.7.0
 oauthlib==3.2.0
 openapi==1.1.0
 packaging==21.3

@@ -10,6 +10,7 @@ from django_elasticsearch_dsl_drf.filter_backends import (
     FilteringFilterBackend,
 )
 from django_elasticsearch_dsl_drf.viewsets import BaseDocumentViewSet
+from rest_framework_tracking.mixins import LoggingMixin
 
 from .models import Files, FileSet
 from .documents import FilesDocument
@@ -17,7 +18,7 @@ from .serializers import FilesSerializer, FilesDocumentSerializer, FileSetSerial
 from .actions import merge_sets
 
 
-class FileSetViewset(viewsets.ModelViewSet):
+class FileSetViewset(LoggingMixin, viewsets.ModelViewSet):
     """
     A viewset that provides the standard actions of Projects
     """
@@ -26,6 +27,10 @@ class FileSetViewset(viewsets.ModelViewSet):
     serializer_class = FileSetSerializer
     filterset_fields = ["id"]
     permission_classes = (permissions.IsAuthenticated,)
+
+    def should_log(self, request, response):
+        """Log only errors"""
+        return response.status_code >= 400
 
     @action(methods=["POST"], detail=False, url_path="merge", url_name="set-merge")
     def merge_file_sets(self, request, **kwargs):
@@ -39,14 +44,25 @@ class FileSetViewset(viewsets.ModelViewSet):
         if self.request.user.is_superuser:
             return qs
         else:
-            # need to be replaced to query based on file sets
             request_user_group = self.request.user.groups.all()
             return qs.filter(group_access__in=request_user_group)
 
+    def destroy(self, request, *args, **kwargs):
+        qs_object = self.queryset
+        qs_id = self.kwargs["pk"]
+        fileset_object = qs_object.filter(id=qs_id, owner=self.request.user)
+        fileset_object.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
-class FilesUploadView(APIView):
+
+class FilesUploadView(LoggingMixin, APIView):
     permission_classes = (permissions.IsAuthenticated,)
     parser_class = (FileUploadParser,)
+    decode_request_body = False
+
+    def should_log(self, request, response):
+        """Log only errors"""
+        return response.status_code >= 400
 
     def post(self, request, *args, **kwargs):
         request.data["owner"] = self.request.user.id
@@ -58,13 +74,17 @@ class FilesUploadView(APIView):
             return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class FileViewset(viewsets.ReadOnlyModelViewSet):
+class FileViewset(LoggingMixin, viewsets.ReadOnlyModelViewSet):
     queryset = Files.objects.all()
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = FilesSerializer
 
+    def should_log(self, request, response):
+        """Log only errors"""
+        return response.status_code >= 400
 
-class FileSearchViewset(BaseDocumentViewSet):
+
+class FileSearchViewset(LoggingMixin, BaseDocumentViewSet):
     document = FilesDocument
     serializer_class = FilesDocumentSerializer
     permission_classes = (permissions.IsAuthenticated,)
@@ -90,3 +110,6 @@ class FileSearchViewset(BaseDocumentViewSet):
         "location": "location",
         "file_set": "file_set",
     }
+    def should_log(self, request, response):
+        """Log only errors"""
+        return response.status_code >= 400

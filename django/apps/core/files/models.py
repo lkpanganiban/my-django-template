@@ -14,6 +14,10 @@ class FileSet(models.Model):
     update_date = models.DateTimeField(auto_now=True)
     tags = models.JSONField(null=True, blank=True)
     group_access = models.ManyToManyField(Group)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+
+    def get_owner(self):
+        return self.owner.email
 
     class Meta:
         verbose_name_plural = "File Sets"
@@ -63,6 +67,7 @@ class Files(models.Model):
             self.name = self.location.name
             self.file_type = self.location.path.split(".")[-1]
             self.file_size = self.location.size
+            self.owner = self.file_set.owner
             new_name = str(self.id) + f".{self.file_type}"
             self.location.name = new_name
         super(Files, self).save(*args, **kwargs)

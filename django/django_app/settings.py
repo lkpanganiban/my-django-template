@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_json_api',
     'rest_framework.authtoken',
+    'rest_framework_tracking',
     'django_prometheus',
     'django_elasticsearch_dsl',
     'django_elasticsearch_dsl_drf',
@@ -288,3 +289,4 @@ ELASTICSEARCH_DSL={
 
 # TAILWIND
 TAILWIND_APP_NAME = 'theme'
+
