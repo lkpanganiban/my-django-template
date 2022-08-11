@@ -31,6 +31,7 @@ django-tailwind==3.1.1
 djangorestframework==3.13.1
 djangorestframework-jsonapi==5.0.0
 djangorestframework-simplejwt==5.0.0
+drf-api-tracking==1.8.0
 elasticsearch==7.17.0
 elasticsearch-dsl==7.4.0
 fake-factory==9999.9.9

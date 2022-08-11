@@ -8,9 +8,9 @@ from .models import Files
 @registry.register_document
 class FilesDocument(Document):
     name = fields.TextField(analyzer=file_analyzer)
-    # owner = fields.KeywordField(
-    #     attr="get_owner",
-    # )
+    owner = fields.KeywordField(
+        attr="get_owner",
+    )
     file_type = fields.KeywordField()
     file_size = fields.IntegerField()
     description = fields.TextField()

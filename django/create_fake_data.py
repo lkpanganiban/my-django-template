@@ -5,7 +5,6 @@ import django
 from faker import Faker
 from apps.core.files.models import * 
 from apps.core.users.models import *
-from django.contrib.auth.models import Group
 from model_bakery.recipe import Recipe,foreign_key
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "django_app.settings")
