@@ -53,8 +53,8 @@ class Files(models.Model):
     def __str__(self):
         return str(self.id)
 
-    # def get_owner(self):
-    #     return self.owner.email
+    def get_owner(self):
+        return self.owner.email
 
     def get_file_set(self):
         return str(self.file_set.id)
