@@ -1,9 +1,8 @@
 from django.core.files import File
 from django.contrib.auth.models import Group
 from rest_framework import status
-from rest_framework.test import APITestCase
+from rest_framework.test import APITestCase, APIClient
 from rest_framework.authtoken.models import Token
-from rest_framework.test import APIClient
 from apps.core.users.models import User
 from apps.core.users.serializers import RegisterSerializer
 from .serializers import FileSetSerializer, FilesSerializer

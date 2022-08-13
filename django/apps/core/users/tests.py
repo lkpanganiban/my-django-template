@@ -1,5 +1,5 @@
 from rest_framework import status
-from rest_framework.test import APITestCase
+from rest_framework.test import APITestCase, APIClient
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import Group
 from apps.core.users.models import User, Profile
@@ -20,6 +20,10 @@ class UserAppTest(APITestCase):
         self.register_serializer = RegisterSerializer(data=self.data)
         self.register_serializer.is_valid()
         self.register_serializer.save()
+        token = Token.objects.get(user__email=self.data["username"])
+        self.client = APIClient()
+        self.client.credentials(HTTP_AUTHORIZATION=f"Token {token}")
+
 
     def test_user_register_serializer(self):
         u = User.objects.filter().count()
@@ -39,3 +43,8 @@ class UserAppTest(APITestCase):
         u = User.objects.filter()
         u_count = u.count()
         self.assertEqual(u_count, 2)
+
+    def test_user_profile_api(self):
+        profile_url = "/users/api/profile/"
+        response = self.client.get(profile_url, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
