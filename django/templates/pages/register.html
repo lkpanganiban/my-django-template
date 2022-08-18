@@ -68,7 +68,13 @@
               </div>
             </div>
             <div class="card-body">
+              {% if errors %}
+              <div class="" role="alert">
+                {{ errors }}
+              </div>
+              {% endif %}
               <form role="form text-left" action="{% url 'register' %}" method="post">
+                {% csrf_token %}
                 <div class="mb-3">
                   <input name="email" type="email" class="form-control" placeholder="Email" aria-label="Email" aria-describedby="email-addon">
                 </div>
@@ -82,10 +88,10 @@
                   <input name="first_name" type="text" class="form-control" placeholder="John/Jane" aria-label="First Name" aria-describedby="email-addon">
                 </div>
                 <div class="mb-3">
-                  <input name="last_name type="text" class="form-control" placeholder="Doe" aria-label="Last Name" aria-describedby="email-addon">
+                  <input name="last_name" type="text" class="form-control" placeholder="Doe" aria-label="Last Name" aria-describedby="email-addon">
                 </div>
                 <div class="mb-3">
-                  <input name="organization type="text" class="form-control" placeholder="My Org" aria-label="Organization" aria-describedby="email-addon">
+                  <input name="organization" type="text" class="form-control" placeholder="My Org" aria-label="Organization" aria-describedby="email-addon">
                </div>
                 <div class="form-check form-check-info text-left">
                   <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked>
@@ -94,7 +100,7 @@
                   </label>
                 </div>
                 <div class="text-center">
-                  <button type="button" class="btn bg-gradient-dark w-100 my-4 mb-2">Sign up</button>
+                  <input type="submit" class="btn bg-gradient-dark w-100 my-4 mb-2">Sign up</input>
                 </div>
                 <p class="text-sm mt-3 mb-0">Already have an account? <a href="{% url 'login' %}" class="text-dark font-weight-bolder">Sign in</a></p>
               </form>
