@@ -23,8 +23,6 @@ A reference repo for my Django Projects
 1. Create a `.env.dev` and `.env-db.dev` files. Use the `.env` and `.env-db` as reference
 2. Run `chmod +x` to `entrypoint.sh` and `entrypoint.prod.sh`
 3. Run `docker-compose up` to start the app.
-4. Login to `docker exec -it app1 sh`.
-5. Run `python manage.py tailwind start`
 
 ## Setup for Operations
 1. Build a Dockerfile for dev and production

@@ -22,7 +22,8 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
     TokenVerifyView
 )
-from django.views.generic.base import TemplateView # new
+
+from apps.core.users.views import login_page, user_dashboard
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -35,9 +36,10 @@ urlpatterns = [
     path('stats/', include('django_prometheus.urls')),
     path("o/", include('oauth2_provider.urls', namespace='oauth2_provider')),
     path("__reload__/", include("django_browser_reload.urls")),
-    path('', TemplateView.as_view(template_name='pages/home.html'), name='home'), # new
+    path('dashboard/', user_dashboard, name="user_dashboard"),
+    path('', login_page, name='home'), # new
 ]
 
 if settings.DEBUG:
     urlpatterns += static.static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    urlpatterns += static.static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static.static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS)
