@@ -1,49 +1,64 @@
-<!-- templates/registration/login.html -->
 {% extends 'base.html' %}
 
-{% block title %}Login{% endblock %}
 
 {% block content %}
-<div class="w-full flex flex-wrap">
 
-  <!-- Login Section -->
-  <div class="w-full md:w-1/2 flex flex-col">
+  <main class="main-content  mt-0">
+    <section>
+      <div class="page-header min-vh-75">
+        <div class="container">
+          <div class="row">
+            <div class="col-xl-4 col-lg-5 col-md-6 d-flex flex-column mx-auto">
+              <div class="card card-plain mt-8">
+                <div class="card-header pb-0 text-left bg-transparent">
+                  <h3 class="font-weight-bolder text-info text-gradient">Welcome back</h3>
+                  <p class="mb-0">Enter your email and password to sign in</p>
+                </div>
+                <div class="card-body">
+                  {% if errors %}
+                  <div class="" role="alert">
+                    {{ errors }}
+                  </div>
+                  {% endif %}
 
-      <div class="flex justify-center md:justify-start pt-12 md:pl-12 md:-mb-24">
-          <a href="#" class="bg-black text-white font-bold text-xl p-4">Logo</a>
-      </div>
-      <div class="flex flex-col justify-center md:justify-start my-auto pt-8 md:pt-0 px-8 md:px-24 lg:px-32">
-          <p class="text-center text-3xl">Go to your account.</p>
-          <form class="flex flex-col pt-3 md:pt-8" method="post">
-            <input type="hidden" name="next" value="{{ next }}" />
+                  <form action="{% url 'login' %}" role="form" method="post">
+                    <input type="hidden" name="next" value="{{ next }}" />
 
-            {% if errors %}
-            <div class="bg-red-100 rounded-lg py-5 px-6 mb-4 text-base text-red-700 mb-3" role="alert">
-              {{ errors }}
+                    {% csrf_token %}
+
+                    <label>Email</label>
+                    <div class="mb-3">
+                      <input name="username" type="email" class="form-control" placeholder="Email" aria-label="Email" aria-describedby="email-addon">
+                    </div>
+                    <label>Password</label>
+                    <div class="mb-3">
+                      <input name="password" type="password" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="password-addon">
+                    </div>
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" id="rememberMe" checked="">
+                      <label class="form-check-label" for="rememberMe">Remember me</label>
+                    </div>
+                    <div class="text-center">
+                      <input type="submit" class="btn bg-gradient-info w-100 mt-4 mb-0">Sign in
+                    </div>
+                  </form>
+                </div>
+                <div class="card-footer text-center pt-0 px-lg-2 px-1">
+                  <p class="mb-4 text-sm mx-auto">
+                    Don't have an account?
+                    <a href="{% url 'register' %}" class="text-info text-gradient font-weight-bold">Sign up</a>
+                  </p>
+                </div>
+              </div>
             </div>
-            {% endif %}
-            {% csrf_token %}
-              <div class="flex flex-col pt-4">
-                  <label for="id_username" class="text-lg">Email</label>
-                  <input name="username" type="email" id="id_username" placeholder="your@email.com" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline">
+            <div class="col-md-6">
+              <div class="oblique position-absolute top-0 h-100 d-md-block d-none me-n8">
+                <div class="oblique-image bg-cover position-absolute fixed-top ms-auto h-100 z-index-0 ms-n6" style="background-image:url('/static/assets/img/curved-images/curved6.jpg')"></div>
               </div>
-              <div class="flex flex-col pt-4">
-                  <label for="id_password" class="text-lg">Password</label>
-                  <input type="password" name="password" id="id_password" placeholder="Password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline">
-              </div>
-
-              <input type="submit" value="Log In" class="bg-black text-white font-bold text-lg hover:bg-gray-700 p-2 mt-8">
-          </form>
-          <div class="text-center pt-12 pb-12">
-              <p>Don't have an account? <a href="{% url 'register' %}" class="underline font-semibold">Register here.</a></p>
+            </div>
           </div>
+        </div>
       </div>
-
-  </div>
-
-  <!-- Image Section -->
-  <div class="w-1/2 shadow-2xl">
-      <img class="object-cover w-full h-screen hidden md:block" src="https://source.unsplash.com/IXUM4cJynP0">
-  </div>
-</div>
+    </section>
+  </main>
 {% endblock %}

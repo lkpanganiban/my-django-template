@@ -12,8 +12,9 @@ def login_page(request):
         password = request.POST.get("password")
         user = authenticate(username=username, password=password)
         if user is not None and user.is_active:
+            print('yoloho')
             login(request, user)
-            return render(request, "pages/home.html")
+            return redirect("user_dashboard")
         else:
             errors = "Invalid username and password combination!"
     return render(request, "pages/login.html", {"errors": errors})
@@ -41,4 +42,8 @@ def register_page(request):
 @login_required
 def logout_page(request):
     logout(request)
+    return render(request, "pages/login.html")
+
+@login_required
+def user_dashboard(request):
     return render(request, "pages/home.html")

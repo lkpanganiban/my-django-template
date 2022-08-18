@@ -48,9 +48,6 @@ INSTALLED_APPS = [
     'django_elasticsearch_dsl_drf',
     'oauth2_provider',
     'corsheaders',
-    # tailwind app
-    'tailwind',
-    'theme',
     'django_browser_reload',
 ]
 
@@ -157,7 +154,7 @@ if not DEBUG:
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [
-   os.path.join(BASE_DIR, 'theme/static/')
+   os.path.join(BASE_DIR, 'static')
 ]
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
@@ -224,7 +221,7 @@ TEMPLATES = [
     },
 ]
 
-LOGIN_REDIRECT_URL = 'home'
+LOGIN_REDIRECT_URL = 'login'
 LOGOUT_REDIRECT_URL = 'login' 
 
 # REST FRAMEWORK
@@ -286,7 +283,4 @@ ELASTICSEARCH_DSL={
         'hosts': os.environ.get('ELASTICSEARCH_URL', 'localhost:9200')
     },
 }
-
-# TAILWIND
-TAILWIND_APP_NAME = 'theme'
 

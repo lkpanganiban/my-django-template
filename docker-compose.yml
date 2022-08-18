@@ -75,7 +75,7 @@ services:
     build:
       context: docker-elk/elasticsearch/
       args:
-        ELK_VERSION: $ELK_VERSION
+        ELK_VERSION: 7.17.0
     volumes:
       - ./docker-elk/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro,z
       - elasticsearch:/usr/share/elasticsearch/data:z
@@ -93,7 +93,7 @@ services:
     build:
       context: docker-elk/logstash/
       args:
-        ELK_VERSION: $ELK_VERSION
+        ELK_VERSION: 7.17.0
     volumes:
       - ./docker-elk/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro,z
       - ./docker-elk/logstash/pipeline:/usr/share/logstash/pipeline:ro,z
