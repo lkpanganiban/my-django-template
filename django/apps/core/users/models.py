@@ -41,6 +41,10 @@ class Subscriptions(models.Model):
     create_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        verbose_name_plural = "Subscriptions"
+        ordering = ["-create_date"]
+
     @property
     def is_expired(self):
         days = (self.subscription_expiry - datetime.now(timezone.utc)).days

@@ -45,7 +45,7 @@ class FileSetViewset(LoggingMixin, viewsets.ModelViewSet):
         if self.request.user.is_superuser:
             return qs
         else:
-            request_user_group = self.request.user.subscriptions.all()
+            request_user_group = self.request.user.subscriptions.all().filter(status=True)
             return qs.filter(subscription_access__in=request_user_group)
 
     def destroy(self, request, *args, **kwargs):
