@@ -1,7 +1,8 @@
 import uuid
 from datetime import datetime, timezone
 from django.db import models
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User
+from apps.core.users.models import Subscriptions
 
 
 def get_time_now():
@@ -13,7 +14,7 @@ class FileSet(models.Model):
     create_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)
     tags = models.JSONField(null=True, blank=True)
-    group_access = models.ManyToManyField(Group)
+    subscription_access = models.ManyToManyField(Subscriptions)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
 
     def get_owner(self):
@@ -59,8 +60,8 @@ class Files(models.Model):
     def get_file_set(self):
         return str(self.file_set.id)
 
-    def has_group_access(self, group=None):
-        return self.file_set.group_access.contains(group)
+    def has_subscription_access(self, subscription=None):
+        return self.file_set.subscription_access.contains(subscription)
 
     def save(self, *args, **kwargs):
         if kwargs.get("force_insert") is not None:  # handle first insert to db

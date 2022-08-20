@@ -3,7 +3,7 @@ from django.contrib.auth.models import Group
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 from rest_framework.authtoken.models import Token
-from apps.core.users.models import User
+from apps.core.users.models import User, Subscriptions
 from apps.core.users.serializers import RegisterSerializer
 from .serializers import FileSetSerializer, FilesSerializer
 from .models import FileSet, Files
@@ -28,8 +28,8 @@ class FileAppTest(APITestCase):
 
     def _create_file_set(self, user_data):
         user = User.objects.get(email=user_data["email"])
-        group = Group.objects.filter(user=user)
-        set_data = {"group_access": [str(group.first().id)], "owner": str(user.id)}
+        subscription = Subscriptions.objects.filter(subscriptions__in=[user])
+        set_data = {"subscription_access": [str(subscription.first().id)], "owner": str(user.id)}
         file_set_serializer = FileSetSerializer(data=set_data)
         file_set_serializer.is_valid()
         file_set_serializer.save()
@@ -78,14 +78,14 @@ class FileAppTest(APITestCase):
         empty_response = empty_client.get(file_set_url, format="json")
         self.assertEqual(len(empty_response.json()["data"]), 0)
 
-    def test_group_access(self):
+    def test_subscription_access(self):
         file = Files.objects.filter()[0]
         u = User.objects.get(email=self.user_data["email"])
-        self.assertTrue(file.has_group_access(u.groups.all()[0]))
+        self.assertTrue(file.has_subscription_access(u.subscriptions.all()[0]))
         # check file set ownership
         empty_user_data = self._create_user("hello2@example.com")
         u = User.objects.get(email=empty_user_data["email"])
-        self.assertFalse(file.has_group_access(u.groups.all()[0]))
+        self.assertFalse(file.has_subscription_access(u.subscriptions.all()[0]))
 
     def test_destroy_fileset(self):
         for p in ["hello2@example.com", "hello3@example.com"]:

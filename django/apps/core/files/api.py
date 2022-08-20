@@ -34,6 +34,7 @@ class FileSetViewset(LoggingMixin, viewsets.ModelViewSet):
 
     @action(methods=["POST"], detail=False, url_path="merge", url_name="set-merge")
     def merge_file_sets(self, request, **kwargs):
+        # assumes that the first item will be the main file set
         set_list = request.data.get("set_list").split(",")
         detail = merge_sets(set_list)
         message = {"detail": detail}
@@ -44,8 +45,8 @@ class FileSetViewset(LoggingMixin, viewsets.ModelViewSet):
         if self.request.user.is_superuser:
             return qs
         else:
-            request_user_group = self.request.user.groups.all()
-            return qs.filter(group_access__in=request_user_group)
+            request_user_group = self.request.user.subscriptions.all()
+            return qs.filter(subscription_access__in=request_user_group)
 
     def destroy(self, request, *args, **kwargs):
         qs_object = self.queryset
