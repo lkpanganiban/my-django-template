@@ -28,8 +28,8 @@ class FileAppTest(APITestCase):
 
     def _create_file_set(self, user_data):
         user = User.objects.get(email=user_data["email"])
-        subscription = Subscriptions.objects.filter(subscriptions__in=[user])
-        set_data = {"subscription_access": [str(subscription.first().id)], "owner": str(user.id)}
+        subscription = Subscriptions.objects.filter(user_subscriptions__in=[user])
+        set_data = {"subscription": str(subscription[0].id)}
         file_set_serializer = FileSetSerializer(data=set_data)
         file_set_serializer.is_valid()
         file_set_serializer.save()
@@ -81,11 +81,11 @@ class FileAppTest(APITestCase):
     def test_subscription_access(self):
         file = Files.objects.filter()[0]
         u = User.objects.get(email=self.user_data["email"])
-        self.assertTrue(file.has_subscription_access(u.subscriptions.all()[0]))
+        self.assertTrue(file.has_subscription_access(u.user_subscriptions.all()[0]))
         # check file set ownership
         empty_user_data = self._create_user("hello2@example.com")
         u = User.objects.get(email=empty_user_data["email"])
-        self.assertFalse(file.has_subscription_access(u.subscriptions.all()[0]))
+        self.assertFalse(file.has_subscription_access(u.user_subscriptions.all()[0]))
 
     def test_destroy_fileset(self):
         for p in ["hello2@example.com", "hello3@example.com"]:

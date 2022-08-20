@@ -47,5 +47,5 @@ class SubscriptionViewset(LoggingMixin, viewsets.ReadOnlyModelViewSet):
     
     def get_queryset(self):
         # print(self.request.user.subscriptions.all())
-        return Subscriptions.objects.filter(subscriptions__in=[self.request.user])
+        return Subscriptions.objects.filter(user_subscriptions__in=[self.request.user])
 

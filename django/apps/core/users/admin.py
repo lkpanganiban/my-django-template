@@ -42,6 +42,11 @@ class ProfileAdmin(admin.ModelAdmin):
         return obj.user.is_active
 
 
+class SubscriptionsAdmin(admin.ModelAdmin):
+    pass
+
+admin.site.register(Subscriptions, SubscriptionsAdmin)
+
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
 admin.site.register(Profile, ProfileAdmin)

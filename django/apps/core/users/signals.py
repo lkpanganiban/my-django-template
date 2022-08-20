@@ -22,7 +22,7 @@ def create_profile(sender, instance, created=False, **kwargs):
         subscription = Subscriptions.objects.create(
             owner=instance
         )
-        subscription.subscriptions.add(instance)
+        subscription.user_subscriptions.add(instance)
         if settings.EMAIL_SEND:
             send_registration_email.delay(
                 instance.first_name, profile.account_expiry, instance.email
