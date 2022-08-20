@@ -86,6 +86,14 @@ class FileViewset(LoggingMixin, viewsets.ReadOnlyModelViewSet):
         """Log only errors"""
         return response.status_code >= 400
 
+    def get_queryset(self):
+        qs = self.queryset
+        if self.request.user.is_superuser:
+            return qs
+        else:
+            request_user_group = self.request.user.user_subscriptions.all().filter(status=True)
+            return qs.filter(file_set__subscription__in=request_user_group)
+
 
 class FileSearchViewset(LoggingMixin, BaseDocumentViewSet):
     document = FilesDocument

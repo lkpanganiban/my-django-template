@@ -34,7 +34,7 @@ class Profile(models.Model):
 class Subscriptions(models.Model):
     """
     the subscription model will control the fileset access.
-    if subscription is expired then user will not be able to fetch the filesets and files
+    e.g. if subscription is expired then user will not be able to fetch the filesets and files
     """
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     owner = models.OneToOneField(User, on_delete=models.CASCADE, related_name='owner')
