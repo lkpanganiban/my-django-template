@@ -3,7 +3,7 @@ from django.conf import settings
 from django.contrib.auth.models import User, Group
 from django.db.models.signals import post_save
 from rest_framework.authtoken.models import Token
-from .models import Profile
+from .models import Profile, Subscriptions
 from .tasks import send_registration_email
 
 
@@ -19,6 +19,10 @@ def create_profile(sender, instance, created=False, **kwargs):
         profile = Profile.objects.create(user=instance)
         group, created = Group.objects.get_or_create(name=instance.email)
         group.user_set.add(instance)
+        subscription = Subscriptions.objects.create(
+            owner=instance
+        )
+        subscription.user_subscriptions.add(instance)
         if settings.EMAIL_SEND:
             send_registration_email.delay(
                 instance.first_name, profile.account_expiry, instance.email

@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
-from .models import Profile
+from .models import Profile, Subscriptions
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -80,4 +80,11 @@ class ProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer()
     class Meta:
         model = Profile
+        fields = "__all__"
+
+class SubscriptionSerializer(serializers.ModelSerializer):
+    owner = UserSerializer()
+        
+    class Meta:
+        model = Subscriptions
         fields = "__all__"

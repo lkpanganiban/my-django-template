@@ -1,7 +1,8 @@
 import uuid
 from datetime import datetime, timezone
 from django.db import models
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User
+from apps.core.users.models import Subscriptions
 
 
 def get_time_now():
@@ -13,11 +14,7 @@ class FileSet(models.Model):
     create_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)
     tags = models.JSONField(null=True, blank=True)
-    group_access = models.ManyToManyField(Group)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-
-    def get_owner(self):
-        return self.owner.email
+    subscription = models.ForeignKey(Subscriptions, on_delete=models.CASCADE, null=True, blank=True, related_name="file_set_owner")
 
     class Meta:
         verbose_name_plural = "File Sets"
@@ -27,6 +24,14 @@ class FileSet(models.Model):
     def __str__(self):
         return str(self.id)
 
+    @property
+    def owner_email(self):
+        return self.subscription.owner.email
+    
+    def has_subscription_access(self, subscription=None):
+        if subscription.status:
+            return self.subscription_access.contains(subscription)
+        return False
 
 class Files(models.Model):
     """
@@ -37,7 +42,7 @@ class Files(models.Model):
     name = models.CharField(max_length=999, default="file 1")
     file_type = models.CharField(max_length=999, default="binary")
     file_size = models.IntegerField(default=0)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    # owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     file_set = models.ForeignKey(FileSet, on_delete=models.CASCADE, null=True)
     location = models.FileField(upload_to="files")
     description = models.TextField(null=True, blank=True)
@@ -53,21 +58,23 @@ class Files(models.Model):
     def __str__(self):
         return str(self.id)
 
-    def get_owner(self):
-        return self.owner.email
+    @property
+    def owner_email(self):
+        return self.file_set.subscription.owner.email
 
-    def get_file_set(self):
-        return str(self.file_set.id)
-
-    def has_group_access(self, group=None):
-        return self.file_set.group_access.contains(group)
+    def has_subscription_access(self, subscription=None):
+        if subscription.status:
+            return self.file_set.subscription == subscription
+        return False
 
     def save(self, *args, **kwargs):
         if kwargs.get("force_insert") is not None:  # handle first insert to db
-            self.name = self.location.name
-            self.file_type = self.location.path.split(".")[-1]
-            self.file_size = self.location.size
-            self.owner = self.file_set.owner
+            self.name = self.location.name.split("/")[-1]
+            try:
+                self.file_type = self.location.path.split(".")[-1]
+                self.file_size = self.location.size
+            except:
+                pass
             new_name = str(self.id) + f".{self.file_type}"
             self.location.name = new_name
         super(Files, self).save(*args, **kwargs)
