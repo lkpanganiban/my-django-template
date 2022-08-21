@@ -1,3 +1,4 @@
+from ast import Subscript
 from rest_framework import status, permissions, viewsets, renderers
 from rest_framework.parsers import FileUploadParser
 from rest_framework.response import Response
@@ -11,7 +12,7 @@ from django_elasticsearch_dsl_drf.filter_backends import (
 )
 from django_elasticsearch_dsl_drf.viewsets import BaseDocumentViewSet
 from rest_framework_tracking.mixins import LoggingMixin
-
+from apps.core.users.models import Subscriptions
 from .models import Files, FileSet
 from .documents import FilesDocument
 from .serializers import FilesSerializer, FilesDocumentSerializer, FileSetSerializer
@@ -34,6 +35,7 @@ class FileSetViewset(LoggingMixin, viewsets.ModelViewSet):
 
     @action(methods=["POST"], detail=False, url_path="merge", url_name="set-merge")
     def merge_file_sets(self, request, **kwargs):
+        # assumes that the first item will be the main file set
         set_list = request.data.get("set_list").split(",")
         detail = merge_sets(set_list)
         message = {"detail": detail}
@@ -44,13 +46,14 @@ class FileSetViewset(LoggingMixin, viewsets.ModelViewSet):
         if self.request.user.is_superuser:
             return qs
         else:
-            request_user_group = self.request.user.groups.all()
-            return qs.filter(group_access__in=request_user_group)
+            request_user_group = self.request.user.user_subscriptions.all().filter(status=True)
+            return qs.filter(subscription__in=request_user_group)
 
     def destroy(self, request, *args, **kwargs):
         qs_object = self.queryset
         qs_id = self.kwargs["pk"]
-        fileset_object = qs_object.filter(id=qs_id, owner=self.request.user)
+        sub = Subscriptions.objects.get(owner=self.request.user)
+        fileset_object = qs_object.filter(id=qs_id, subscription=sub)
         fileset_object.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -82,6 +85,14 @@ class FileViewset(LoggingMixin, viewsets.ReadOnlyModelViewSet):
     def should_log(self, request, response):
         """Log only errors"""
         return response.status_code >= 400
+
+    def get_queryset(self):
+        qs = self.queryset
+        if self.request.user.is_superuser:
+            return qs
+        else:
+            request_user_group = self.request.user.user_subscriptions.all().filter(status=True)
+            return qs.filter(file_set__subscription__in=request_user_group)
 
 
 class FileSearchViewset(LoggingMixin, BaseDocumentViewSet):

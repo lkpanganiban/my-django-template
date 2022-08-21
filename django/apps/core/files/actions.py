@@ -1,12 +1,5 @@
 from .models import FileSet, Files
 
-
-def _move_files(f: Files, f_new: FileSet) -> bool:
-    f.file_set = f_new
-    f.save()
-    return True
-
-
 def _move_files_set(fs_main: FileSet, fs_sub: FileSet) -> bool:
     for f in Files.objects.filter(file_set__in=fs_sub):
         f.file_set = fs_main
