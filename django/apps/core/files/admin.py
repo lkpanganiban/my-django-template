@@ -1,4 +1,6 @@
 from django.contrib import admin
+from guardian.admin import GuardedModelAdmin
+
 from .models import FileSet, Files
 
 
@@ -11,7 +13,7 @@ class FilesAdmin(admin.ModelAdmin):
         return obj.file_set.subscription.owner.email
 
 
-class FileSetAdmin(admin.ModelAdmin):
+class FileSetAdmin(GuardedModelAdmin):
     list_display = ('id','owner','create_date', 'update_date')
 
     @staticmethod

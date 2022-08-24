@@ -41,9 +41,8 @@ class UserAppTest(APITestCase):
         response = self.client.post(register_url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         u = User.objects.filter()
-        print(u)
         u_count = u.count()
-        self.assertEqual(u_count, 2)
+        self.assertEqual(u_count, 3) # anonymous user is being created by django-guardian
 
     def test_user_profile_api(self):
         profile_url = "/users/api/profile/"
