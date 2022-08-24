@@ -31,16 +31,20 @@ class Profile(models.Model):
     def add_login_count(self):
         self.login_count += 1
 
+
 class Subscriptions(models.Model):
     """
     the subscription model will control the fileset access.
     e.g. if subscription is expired then user will not be able to fetch the filesets and files
     """
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    owner = models.OneToOneField(User, on_delete=models.CASCADE, related_name='owner')
+    owner = models.OneToOneField(User, on_delete=models.CASCADE, related_name="owner")
     user_subscriptions = models.ManyToManyField(User, related_name="user_subscriptions")
     status = models.BooleanField(default=True)
-    subscription_expiry = models.DateTimeField(default=get_account_expiry, editable=True)
+    subscription_expiry = models.DateTimeField(
+        default=get_account_expiry, editable=True
+    )
     restrictions = models.JSONField(null=True, blank=True)
     create_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)
@@ -48,6 +52,7 @@ class Subscriptions(models.Model):
     class Meta:
         verbose_name_plural = "Subscriptions"
         ordering = ["-create_date"]
+        permissions = (("can_manage_subscriptions", "Can manage subscriptions"),)
 
     def __str__(self):
         return str(self.id)

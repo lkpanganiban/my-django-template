@@ -16,7 +16,7 @@ from apps.core.users.models import Subscriptions
 from .models import Files, FileSet
 from .documents import FilesDocument
 from .serializers import FilesSerializer, FilesDocumentSerializer, FileSetSerializer
-from .actions import merge_sets
+from .actions import assign_moderator_permissions, merge_sets, assign_moderator_permissions
 
 
 class FileSetViewset(LoggingMixin, viewsets.ModelViewSet):
@@ -38,6 +38,13 @@ class FileSetViewset(LoggingMixin, viewsets.ModelViewSet):
         # assumes that the first item will be the main file set
         set_list = request.data.get("set_list").split(",")
         detail = merge_sets(set_list)
+        message = {"detail": detail}
+        return Response(message, status=status.HTTP_200_OK)
+
+    @action(methods=["POST"], detail=False, url_path="assign-moderator", url_name="assign-moderator")
+    def assign_moderator_to_file_set(self, request, **kwargs):
+        fs_id = request.data.get("fs_id")
+        detail = assign_moderator_permissions(self.request.user, fs_id)
         message = {"detail": detail}
         return Response(message, status=status.HTTP_200_OK)
 

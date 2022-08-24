@@ -1,3 +1,4 @@
+from guardian.shortcuts import assign_perm
 from .models import FileSet, Files
 
 def _move_files_set(fs_main: FileSet, fs_sub: FileSet) -> bool:
@@ -17,3 +18,13 @@ def merge_sets(set_list: list) -> str:
     fs_sub = FileSet.objects.filter(id__in=sub_sets_uuid)
     _move_files_set(fs_main, fs_sub)
     return f"merged {sub_sets_uuid} with {main_set_uuid}"
+
+
+def assign_moderator_permissions(user, fs_id):
+    fs = FileSet.objects.get(id=fs_id)
+    assign_perm('can_moderate_files', user, fs)
+    return user.has_perm('can_moderate_files', fs)
+
+def has_moderator_permissions(user, fs_id):
+    fs = FileSet.objects.get(id=fs_id)
+    return user.has_perm('can_moderate_files', fs)
