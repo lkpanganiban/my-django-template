@@ -25,6 +25,11 @@ class FileSetSerializer(serializers.ModelSerializer):
         fs = self._add_moderators_to_file_set(fs, moderators_list)
         return fs
 
+    def update(self, instance, validated_data):
+        moderators_list = validated_data.pop("moderators")
+        instance.tags = validated_data.get('tags', instance.tags)
+        instance.save()
+        return self._add_moderators_to_file_set(instance, moderators_list)
 
 class FilesSerializer(serializers.ModelSerializer):
     class Meta:
