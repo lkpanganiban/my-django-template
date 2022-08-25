@@ -7,7 +7,11 @@ from apps.core.users.models import User, Subscriptions
 from apps.core.users.serializers import RegisterSerializer
 from .serializers import FileSetSerializer, FilesSerializer
 from .models import FileSet, Files
-from .actions import has_moderator_permissions, remove_moderator_permissions, fetch_fileset_moderator_permissions
+from .actions import (
+    has_moderator_permissions,
+    remove_moderator_permissions,
+    fetch_fileset_moderator_permissions,
+)
 
 # Create your tests here.
 class FileAppTest(APITestCase):
@@ -31,7 +35,10 @@ class FileAppTest(APITestCase):
         user = User.objects.get(email=user_data["email"])
         subscription = Subscriptions.objects.filter(user_subscriptions__in=[user])
         # print(Subscriptions.objects.filter(user_subscriptions__in=[user]))
-        set_data = {"subscription": str(subscription[0].id), "moderators": [str(subscription[0].owner.id)]}
+        set_data = {
+            "subscription": str(subscription[0].id),
+            "moderators": [str(subscription[0].owner.id)],
+        }
         file_set_serializer = FileSetSerializer(data=set_data)
         file_set_serializer.is_valid()
         file_set_serializer.save()
@@ -39,9 +46,7 @@ class FileAppTest(APITestCase):
         return file_set_serializer
 
     def _create_file(self, user_data, file_set_data):
-        f = File(
-            open("/usr/src/app/Dockerfile"), "rb"
-        )  # cast io object with django file
+        f = File(open("Dockerfile"), "rb")  # cast io object with django file
         user = User.objects.get(email=user_data["email"])
         file_data = {
             "name": "dockerfile",
@@ -96,7 +101,7 @@ class FileAppTest(APITestCase):
             set_data = self._create_file_set(user_data)
             self._create_file(user_data, set_data.data)
             self._create_file(user_data, set_data.data)
-            
+
         file_set_url = "/files/api/set/"
         response = self.client.get(file_set_url, format="json")
         fs_id = response.json()["data"][0]["id"]

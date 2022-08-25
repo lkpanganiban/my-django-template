@@ -13,6 +13,8 @@ def merge_sets(set_list: list) -> str:
     """
     to do merge sets both list must belong to the same set of groups
     """
+    if len(set_list) < 2:
+        return "cannot merge sets since defined sets are less than 2"
     main_set_uuid = set_list[0]
     sub_sets_uuid = set_list[1:]
     fs_main = FileSet.objects.get(id__in=main_set_uuid)
@@ -26,17 +28,17 @@ def move_file_set_to_another_subscription(subscription, fs_id):
     fs.save()
     return fs
 
-def assign_moderator_permissions(user, fs_id):
+def assign_moderator_permissions(user, fs_id: str) -> bool:
     fs = FileSet.objects.get(id=fs_id)
     assign_perm('can_moderate_files', user, fs)
     return user.has_perm('can_moderate_files', fs)
 
-def remove_moderator_permissions(user, fs_id):
+def remove_moderator_permissions(user, fs_id: str) -> bool:
     fs = FileSet.objects.get(id=fs_id)
     remove_perm('can_moderate_files', user, fs)
     return user.has_perm('can_moderate_files', fs)
 
-def has_moderator_permissions(user, fs_id):
+def has_moderator_permissions(user, fs_id: str) -> bool:
     fs = FileSet.objects.get(id=fs_id)
     return user.has_perm('can_moderate_files', fs)
 
