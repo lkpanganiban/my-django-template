@@ -1,3 +1,4 @@
+import shutil
 from django.core.files import File
 from django.contrib.auth.models import Group
 from rest_framework import status
@@ -68,6 +69,9 @@ class FileAppTest(APITestCase):
         self.file_data = self._create_file(self.user_data, self.set_data.data)
         self.client = APIClient()
         self.client.credentials(HTTP_AUTHORIZATION=f"Token {self.user_data['token']}")
+
+    def tearDown(self):
+        shutil.rmtree("files/files")
 
     def test_file_set_serializer(self):
         fset = FileSet.objects.filter().count()
