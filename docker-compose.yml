@@ -20,7 +20,7 @@ services:
   app_shared_task_worker:
     build: ./django
     container_name: appsharedtaskworker
-    command: celery -A django_app worker -c 2 --loglevel=INFO
+    command: watchmedo auto-restart -d apps/ -p '*.py' celery -A django_app worker -c 2 --loglevel=INFO
     depends_on:
       - app_1
       - redis_db
@@ -31,7 +31,7 @@ services:
   app_long_task_worker:
     build: ./django
     container_name: applongtaskworker
-    command: celery -A django_app worker -Q long_queue -c 2 --loglevel=INFO
+    command: watchmedo auto-restart -d apps/ -p '*.py' celery -A django_app worker -Q long_queue -c 2 --loglevel=INFO
     depends_on:
       - app_1
       - redis_db
