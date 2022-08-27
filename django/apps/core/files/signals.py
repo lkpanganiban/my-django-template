@@ -3,8 +3,10 @@ from django.dispatch import receiver
 
 from django.db.models.signals import post_save
 from .models import FileSet, Files
+from .actions import add_moderator_permission_to_moderators
 
-# @receiver(post_save, sender=FileSet)
-# def add_moderator_permission_to_user(sender, instance=None, created=False, **kwargs):
-#     for u in instance.moderators.all():
-#         print("yo", assign_moderator_permissions(u, str(instance.id)))
+@receiver(post_save, sender=FileSet)
+def add_moderator_permission_to_subscription_owner(sender, instance=None, created=False, **kwargs):
+    if created:
+        instance.moderators.add(instance.subscription.owner)
+        add_moderator_permission_to_moderators(instance, instance.subscription.owner)

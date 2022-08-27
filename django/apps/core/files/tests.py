@@ -9,7 +9,6 @@ from apps.core.users.serializers import RegisterSerializer
 from .serializers import FileSetSerializer, FilesSerializer
 from .models import FileSet, Files
 from .actions import (
-    has_moderator_permissions,
     remove_moderator_permissions,
     fetch_fileset_moderator_permissions,
 )
@@ -118,7 +117,9 @@ class FileAppTest(APITestCase):
     def test_check_assign_moderator(self):
         user = User.objects.get(email=self.user_data["email"])
         set_data_id = self.set_data.data["id"]
-        self.assertTrue(has_moderator_permissions(user, set_data_id))
+        fs = FileSet.objects.get(id=set_data_id)
+        self.assertTrue(fs.has_moderator_access(user))
         self.assertEqual(fetch_fileset_moderator_permissions(user).count(), 1)
         remove_moderator_permissions(user, set_data_id)
-        self.assertFalse(has_moderator_permissions(user, set_data_id))
+        fs = FileSet.objects.get(id=set_data_id)
+        self.assertFalse(fs.has_moderator_access(user))

@@ -40,8 +40,11 @@ class FileSet(models.Model):
 
     def has_subscription_access(self, subscription=None):
         if subscription.status:
-            return self.subscription_access.contains(subscription)
+            return self.subscription == subscription
         return False
+    
+    def has_moderator_access(self, user):
+        return user.has_perm('can_moderate_files', self)
 
 class Files(models.Model):
     """
