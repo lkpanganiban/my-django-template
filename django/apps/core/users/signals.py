@@ -9,8 +9,7 @@ from .tasks import send_registration_email
 
 @receiver(post_save, sender=User)
 def create_token(sender, instance=None, created=False, **kwargs):
-    if created:
-        Token.objects.create(user=instance)
+    if created: Token.objects.create(user=instance)
 
 
 @receiver(post_save, sender=User)
@@ -24,7 +23,6 @@ def create_profile(sender, instance, created=False, **kwargs):
         )
         subscription.user_subscriptions.add(instance)
         subscription.save()
-        if settings.EMAIL_SEND:
-            send_registration_email.delay(
-                instance.first_name, profile.account_expiry, instance.email
-            )
+        send_registration_email.delay(
+            instance.first_name, profile.account_expiry, instance.email
+        )

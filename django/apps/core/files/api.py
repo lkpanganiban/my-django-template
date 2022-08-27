@@ -50,8 +50,7 @@ class FileSetViewset(LoggingMixin, viewsets.ModelViewSet):
 
     def get_queryset(self):
         qs = self.queryset
-        if self.request.user.is_superuser:
-            return qs
+        if self.request.user.is_superuser: return qs
         else:
             request_user_group = self.request.user.user_subscriptions.all().filter(status=True)
             return qs.filter(subscription__in=request_user_group)
@@ -80,8 +79,7 @@ class FilesUploadView(LoggingMixin, APIView):
         if file_serializer.is_valid():
             file_serializer.save()
             return Response(file_serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else: return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class FileViewset(LoggingMixin, viewsets.ReadOnlyModelViewSet):
@@ -95,8 +93,7 @@ class FileViewset(LoggingMixin, viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
         qs = self.queryset
-        if self.request.user.is_superuser:
-            return qs
+        if self.request.user.is_superuser: return qs
         else:
             request_user_group = self.request.user.user_subscriptions.all().filter(status=True)
             return qs.filter(file_set__subscription__in=request_user_group)

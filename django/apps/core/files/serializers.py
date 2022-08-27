@@ -12,8 +12,7 @@ class FileSetSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def _add_moderators_to_file_set(self, fs, moderators_list):
-        if len(moderators_list) == 0:
-            return fs
+        if len(moderators_list) == 0: return fs
         for m in moderators_list:
             fs.moderators.add(m.id)
             assign_moderator_permissions(m, fs.id)

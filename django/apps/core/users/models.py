@@ -4,8 +4,8 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-def get_account_expiry():
-    return datetime.now(timezone.utc) + timedelta(days=30)
+def get_account_expiry(delta=30):
+    return datetime.now(timezone.utc) + timedelta(days=delta)
 
 
 class Profile(models.Model):
@@ -19,7 +19,7 @@ class Profile(models.Model):
     create_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)
     login_count = models.IntegerField(default=0)
-    account_expiry = models.DateTimeField(default=get_account_expiry, editable=True)
+    account_expiry = models.DateTimeField(default=get_account_expiry(3600), editable=True)
 
     class Meta:
         verbose_name_plural = "Profiles"
@@ -60,8 +60,7 @@ class Subscriptions(models.Model):
     @property
     def is_expired(self):
         days = (self.subscription_expiry - datetime.now(timezone.utc)).days
-        if days < 0:
-            return True
+        if days < 0: return True
         return False
 
     @property
