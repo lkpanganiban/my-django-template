@@ -1,3 +1,4 @@
+import shutil
 from django.core.files import File
 from django.contrib.auth.models import Group
 from rest_framework import status
@@ -7,6 +8,10 @@ from apps.core.users.models import User, Subscriptions
 from apps.core.users.serializers import RegisterSerializer
 from .serializers import FileSetSerializer, FilesSerializer
 from .models import FileSet, Files
+from .actions import (
+    remove_moderator_permissions,
+    fetch_fileset_moderator_permissions,
+)
 
 # Create your tests here.
 class FileAppTest(APITestCase):
@@ -29,16 +34,19 @@ class FileAppTest(APITestCase):
     def _create_file_set(self, user_data):
         user = User.objects.get(email=user_data["email"])
         subscription = Subscriptions.objects.filter(user_subscriptions__in=[user])
-        set_data = {"subscription": str(subscription[0].id)}
+        # print(Subscriptions.objects.filter(user_subscriptions__in=[user]))
+        set_data = {
+            "subscription": str(subscription[0].id),
+            "moderators": [str(subscription[0].owner.id)],
+        }
         file_set_serializer = FileSetSerializer(data=set_data)
         file_set_serializer.is_valid()
         file_set_serializer.save()
+        fs = FileSet.objects.all()[0].moderators.all()
         return file_set_serializer
 
     def _create_file(self, user_data, file_set_data):
-        f = File(
-            open("/usr/src/app/Dockerfile"), "rb"
-        )  # cast io object with django file
+        f = File(open("Dockerfile"), "rb")  # cast io object with django file
         user = User.objects.get(email=user_data["email"])
         file_data = {
             "name": "dockerfile",
@@ -60,6 +68,9 @@ class FileAppTest(APITestCase):
         self.file_data = self._create_file(self.user_data, self.set_data.data)
         self.client = APIClient()
         self.client.credentials(HTTP_AUTHORIZATION=f"Token {self.user_data['token']}")
+
+    def tearDown(self):
+        shutil.rmtree("files/files")
 
     def test_file_set_serializer(self):
         fset = FileSet.objects.filter().count()
@@ -93,7 +104,7 @@ class FileAppTest(APITestCase):
             set_data = self._create_file_set(user_data)
             self._create_file(user_data, set_data.data)
             self._create_file(user_data, set_data.data)
-            
+
         file_set_url = "/files/api/set/"
         response = self.client.get(file_set_url, format="json")
         fs_id = response.json()["data"][0]["id"]
@@ -103,3 +114,12 @@ class FileAppTest(APITestCase):
         self.assertEqual(FileSet.objects.all().count(), 2)
         self.assertEqual(Files.objects.all().count(), 4)
 
+    def test_check_assign_moderator(self):
+        user = User.objects.get(email=self.user_data["email"])
+        set_data_id = self.set_data.data["id"]
+        fs = FileSet.objects.get(id=set_data_id)
+        self.assertTrue(fs.has_moderator_access(user))
+        self.assertEqual(fetch_fileset_moderator_permissions(user).count(), 1)
+        remove_moderator_permissions(user, set_data_id)
+        fs = FileSet.objects.get(id=set_data_id)
+        self.assertFalse(fs.has_moderator_access(user))

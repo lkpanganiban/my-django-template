@@ -6,3 +6,5 @@ __pycache__
 .env-db.dev
 .env-db.prod
 django/files/files/
+db.sqlite3
+*.log
