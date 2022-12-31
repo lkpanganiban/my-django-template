@@ -1,0 +1,3 @@
+django/env
+*.sqlite3
+*.log

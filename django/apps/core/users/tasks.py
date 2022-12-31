@@ -1,26 +1,16 @@
+from datetime import datetime
+from django.conf import settings
+from django.template.loader import get_template
 from celery import shared_task
 from celery.utils.log import get_task_logger
-from django.conf import settings
-from django.core.mail import EmailMultiAlternatives
-from django.template.loader import get_template
-
-from .models import Profile, Subscriptions
+from .actions import _send_email_registrations
+from .models import Subscriptions
 
 logger = get_task_logger(__name__)
 
 
-def _send_email_registrations(
-    registration_subject, text_content, html_content, from_email, email_list, bcc_email
-):
-    msg = EmailMultiAlternatives(
-        registration_subject, text_content, from_email, email_list, bcc=bcc_email
-    )
-    msg.attach_alternative(html_content, "text/html")
-    return msg.send()
-
-
 @shared_task
-def send_registration_email(first_name, account_expiry, user_email):
+def send_registration_email(first_name: str, account_expiry:datetime, user_email: str) -> str:
     logger.info(f"sending registration email to {user_email}")
     from_email = settings.DEFAULT_FROM_EMAIL
     bcc_email = [settings.EMAIL_REGISTRATION_BCC]
@@ -48,11 +38,12 @@ def send_registration_email(first_name, account_expiry, user_email):
 
 
 @shared_task
-def check_expiry():
+def check_expiry() -> None:
     logger.info("checking expired subscriptions!")
     for s in Subscriptions.objects.filter(status=True):
         if s.is_expired:
             s.status = False
+            s.save()
     logger.info("checking expired subscriptions done!")
 
 

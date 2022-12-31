@@ -24,11 +24,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = os.environ.get("SECRET_KEY", "mysecret-key-1234")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = util.strtobool(os.environ.get("DEBUG", "True"))
-ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
+ALLOWED_HOSTS = os.environ.get(
+    "DJANGO_ALLOWED_HOSTS", "localhost 127.0.0.1 [::1] *"
+).split(" ")
 
 # Application definition
 
@@ -103,7 +105,7 @@ CACHES = {
 }
 
 # Celery Broker
-CELERY_BROKER = f'redis://{os.environ.get("REDIS_BROKER")}'
+CELERY_BROKER = os.environ.get("REDIS_BROKER", "redis://localhost:6379")
 CELERY_BROKER_URL = CELERY_BROKER
 CELERY_RESULT_BACKEND = CELERY_BROKER
 CELERY_ACCEPT_CONTENT = ["application/json"]
@@ -160,6 +162,8 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Logging
+LOGGING_PATH = os.environ.get("LOGGING_PATH", "app.log")
+REQUESTS_LOGGING_PATH = os.environ.get("LOGGING_PATH", "requests.log")
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,

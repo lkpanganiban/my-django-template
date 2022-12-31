@@ -16,7 +16,7 @@ from apps.core.users.models import Subscriptions
 from .models import Files, FileSet
 from .documents import FilesDocument
 from .serializers import FilesSerializer, FilesDocumentSerializer, FileSetSerializer
-from .actions import merge_sets
+from .actions import assign_moderator_permissions, merge_sets, assign_moderator_permissions
 
 
 class FileSetViewset(LoggingMixin, viewsets.ModelViewSet):
@@ -41,10 +41,16 @@ class FileSetViewset(LoggingMixin, viewsets.ModelViewSet):
         message = {"detail": detail}
         return Response(message, status=status.HTTP_200_OK)
 
+    @action(methods=["POST"], detail=False, url_path="assign-moderator", url_name="assign-moderator")
+    def assign_moderator_to_file_set(self, request, **kwargs):
+        fs_id = request.data.get("fs_id")
+        detail = assign_moderator_permissions(self.request.user, fs_id)
+        message = {"detail": detail}
+        return Response(message, status=status.HTTP_200_OK)
+
     def get_queryset(self):
         qs = self.queryset
-        if self.request.user.is_superuser:
-            return qs
+        if self.request.user.is_superuser: return qs
         else:
             request_user_group = self.request.user.user_subscriptions.all().filter(status=True)
             return qs.filter(subscription__in=request_user_group)
@@ -73,8 +79,7 @@ class FilesUploadView(LoggingMixin, APIView):
         if file_serializer.is_valid():
             file_serializer.save()
             return Response(file_serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else: return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class FileViewset(LoggingMixin, viewsets.ReadOnlyModelViewSet):
@@ -88,8 +93,7 @@ class FileViewset(LoggingMixin, viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
         qs = self.queryset
-        if self.request.user.is_superuser:
-            return qs
+        if self.request.user.is_superuser: return qs
         else:
             request_user_group = self.request.user.user_subscriptions.all().filter(status=True)
             return qs.filter(file_set__subscription__in=request_user_group)

@@ -1,15 +1,12 @@
+import time
 from django.dispatch import receiver
 
 from django.db.models.signals import post_save
 from .models import FileSet, Files
+from .actions import add_moderator_permission_to_moderators
 
-# @receiver(post_save, sender=FileSet)
-# def add_owner_to_fileset_group(sender, instance=None, created=False, **kwargs):
-#     if created:
-#         instance.subscription_access.add(*instance.owner.subscriptions.all())
-
-# @receiver(post_save, sender=Files)
-# def add_owner_to_files_group(sender, instance=None, created=False, **kwargs):
-#     if created:
-#         instance.owner = instance.file_set.owner
-#         instance.save()
+@receiver(post_save, sender=FileSet)
+def add_moderator_permission_to_subscription_owner(sender, instance=None, created=False, **kwargs):
+    if created:
+        instance.moderators.add(instance.subscription.owner)
+        add_moderator_permission_to_moderators(instance, instance.subscription.owner)
