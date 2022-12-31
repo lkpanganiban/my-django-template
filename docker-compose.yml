@@ -1,8 +1,8 @@
 version: '3.7'
 
 services:
-  app_1:
-    container_name: app1
+  django_app:
+    container_name: django_app
     build:
       context: ./django
       dockerfile: Dockerfile
@@ -15,67 +15,71 @@ services:
     env_file:
       - ./.env.dev
     depends_on:
-      - app_db
-      - redis_db
-  app_shared_task_worker:
+      - django_db
+      - django_redis_queue
+      - django_redis_cache
+  django_shared_task_worker:
     build: ./django
-    container_name: appsharedtaskworker
+    container_name: django_shared_task_worker
     command: celery -A django_app worker -c 2 --loglevel=INFO
     depends_on:
-      - app_1
-      - redis_db
+      - django_app
+      - django_redis_queue
     env_file:
       - ./.env.dev
     volumes:
       - ./django/:/usr/src/app/
-  app_long_task_worker:
+  django_long_task_worker:
     build: ./django
-    container_name: applongtaskworker
+    container_name: django_long_task_worker
     command: celery -A django_app worker -Q long_queue -c 2 --loglevel=INFO
     depends_on:
-      - app_1
-      - redis_db
+      - django_app
+      - django_redis_queue
     env_file:
       - ./.env.dev
     volumes:
       - ./django/:/usr/src/app/
-  redis_db:
-    container_name: redis_db
-    image: "redis:alpine"
+  django_redis_cache:
+    container_name: django_redis_cache
+    image: "redis:alpine3.17"
+  django_redis_queue:
+    container_name: django_redis_queue
+    image: "redis:alpine3.17"
     volumes:
       - redis_data:/data
-  app_db:
-    container_name: app_db
+  django_db:
+    container_name: django_db
     image: postgres:13.5-alpine
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
       - ./.env-db.dev
-  app_flower:
-    container_name: api_task_monitor
-    image: mher/flower:0.9.7
+  django_flower:
+    container_name: django_task_monitor
+    image: mher/flower:1.2.0
     environment:
-      - CELERY_BROKER_URL=redis://redis_db:6379/0
+      - CELERY_BROKER_URL=redis://django_redis_queue:6379/0
       - FLOWER_PORT=8888
       - FLOWER_BASIC_AUTH=username:password
     ports:
       - 8888:8888
     depends_on:
-      - app_shared_task_worker
-      - app_long_task_worker
-  # prometheus:
-  #   container_name: prometheus
-  #   image: prom/prometheus
-  #   volumes:
-  #     - ./prometheus/:/etc/prometheus/
-  #   ports:
-  #     - "9090:9090"
+      - django_shared_task_worker
+      - django_long_task_worker
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus
+    volumes:
+      - ./prometheus/:/etc/prometheus/
+    ports:
+      - "9090:9090"
 
   elasticsearch:
     build:
       context: docker-elk/elasticsearch/
       args:
-        ELK_VERSION: 7.17.0
+        ELK_VERSION: 7.17.8
     volumes:
       - ./docker-elk/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro,z
       - elasticsearch:/usr/share/elasticsearch/data:z
@@ -88,12 +92,11 @@ services:
       # Use single node discovery in order to disable production mode and avoid bootstrap checks.
       # see: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
       discovery.type: single-node
-
   logstash:
     build:
       context: docker-elk/logstash/
       args:
-        ELK_VERSION: 7.17.0
+        ELK_VERSION: 7.17.8
     volumes:
       - ./docker-elk/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro,z
       - ./docker-elk/logstash/pipeline:/usr/share/logstash/pipeline:ro,z
@@ -105,19 +108,17 @@ services:
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
     depends_on:
       - elasticsearch
-
-  # kibana:
-  #   build:
-  #     context: docker-elk/kibana/
-  #     args:
-  #       ELK_VERSION: $ELK_VERSION
-  #   volumes:
-  #     - ./docker-elk/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro,z
-  #   ports:
-  #     - "5601:5601"
-  #   depends_on:
-  #     - elasticsearch
-
+  kibana:
+    build:
+      context: docker-elk/kibana/
+      args:
+        ELK_VERSION: $ELK_VERSION
+    volumes:
+      - ./docker-elk/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro,z
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
 volumes:
   postgres_data:
   redis_data:

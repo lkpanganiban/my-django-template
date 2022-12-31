@@ -1,12 +1,12 @@
-FROM python:3.9.10-alpine
+FROM python:3.11.1-slim
 
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 ENV LIBRARY_PATH=/lib:/usr/lib
 
-RUN apk update \
-    && apk add libpq postgresql-dev gcc python3-dev musl-dev jpeg-dev zlib-dev curl build-base libressl-dev libffi-dev geos-dev nodejs npm
+RUN apt -y update \
+    && apt install -y libpq-dev postgresql gcc python3-dev netcat
 
 # set work directory
 WORKDIR /usr/src/app

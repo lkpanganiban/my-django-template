@@ -20,26 +20,28 @@ from django.urls import path, include
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
-    TokenVerifyView
+    TokenVerifyView,
 )
 
 from apps.core.users.views import login_page, user_dashboard
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    # path('accounts/', include('django.contrib.auth.urls')), 
-    path('users/', include('apps.core.users.urls')),
-    path('auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('auth/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
-    path('auth/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('files/', include('apps.core.files.urls')),
-    path('stats/', include('django_prometheus.urls')),
-    path("o/", include('oauth2_provider.urls', namespace='oauth2_provider')),
+    path("admin/", admin.site.urls),
+    # path('accounts/', include('django.contrib.auth.urls')),
+    path("users/", include("apps.core.users.urls")),
+    path("auth/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    path("auth/token/verify/", TokenVerifyView.as_view(), name="token_verify"),
+    path("auth/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("files/", include("apps.core.files.urls")),
+    path("stats/", include("django_prometheus.urls")),
+    path("o/", include("oauth2_provider.urls", namespace="oauth2_provider")),
     path("__reload__/", include("django_browser_reload.urls")),
-    path('dashboard/', user_dashboard, name="user_dashboard"),
-    path('', login_page, name='home'), # new
+    path("dashboard/", user_dashboard, name="user_dashboard"),
+    path("", login_page, name="home"),  # new
 ]
 
 if settings.DEBUG:
     urlpatterns += static.static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    urlpatterns += static.static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS)
+    urlpatterns += static.static(
+        settings.STATIC_URL, document_root=settings.STATICFILES_DIRS
+    )

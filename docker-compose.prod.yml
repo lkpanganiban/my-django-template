@@ -1,7 +1,7 @@
 version: '3.7'
 
 services:
-  app_nginx:
+  django_nginx:
     build: ./nginx
     volumes:
       - static_data_prod:/home/app/web/static
@@ -9,9 +9,9 @@ services:
     ports:
       - 1337:80
     depends_on:
-      - app_1
-  app_1:
-    container_name: app1
+      - django_app
+  django_app:
+    container_name: django_app
     image: django-app-template:latest
     build:
       context: ./django
@@ -25,45 +25,48 @@ services:
     env_file:
       - ./.env.prod
     depends_on:
-      - app_db
-      - redis_db
-  applongtaskworker:
+      - django_db
+      - django_redis_queue
+  django_long_task_worker:
     image: django-app-template:latest
-    container_name: applongtaskworker
+    container_name: django_long_task_worker
     command: celery -A django_app worker -Q long_queue -c 3 --loglevel=INFO
     depends_on:
-      - app_1
-      - redis_db
+      - django_app
+      - django_redis_queue
     env_file:
       - ./.env.prod
-  appsharedtaskworker:
+  django_shared_task_worker:
     image: django-app-template:latest
-    container_name: appsharedtaskworker
+    container_name: django_shared_task_worker
     command: celery -A django_app worker -c 3 --loglevel=INFO
     depends_on:
-      - app_1
-      - redis_db
+      - django_app
+      - django_redis_queue
     env_file:
       - ./.env.prod
-  redis_db:
-    container_name: redis_db
-    image: "redis:alpine"
+  django_redis_cache:
+    container_name: django_redis_cache
+    image: "redis:alpine3.17"
+  django_redis_queue:
+    container_name: django_redis_queue
+    image: "redis:alpine3.17"
     volumes:
       - redis_data_prod:/data
-  app_flower:
-    container_name: api_task_monitor
-    image: mher/flower:0.9.7
+  django_flower:
+    container_name: django_task_monitor
+    image: mher/flower:1.2.0
     environment:
-      - CELERY_BROKER_URL=redis://redis_db:6379/0
+      - CELERY_BROKER_URL=redis://django_redis_queue:6379/0
       - FLOWER_PORT=8888
       - FLOWER_BASIC_AUTH=username:password
-    depends_on:
-      - appsharedtaskworker
-      - applongtaskworker
     ports:
       - 8888:8888
-  app_db:
-    container_name: app_db
+    depends_on:
+      - django_shared_task_worker
+      - django_long_task_worker
+  django_db:
+    container_name: django_db
     image: postgres:13.5-alpine
     volumes:
       - postgres_data_prod:/var/lib/postgresql/data/
