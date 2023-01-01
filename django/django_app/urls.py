@@ -33,7 +33,7 @@ urlpatterns = [
     path("auth/token/verify/", TokenVerifyView.as_view(), name="token_verify"),
     path("auth/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("files/", include("apps.core.files.urls")),
-    path("stats/", include("django_prometheus.urls")),
+    # path("stats/", include("django_prometheus.urls")),
     path("o/", include("oauth2_provider.urls", namespace="oauth2_provider")),
     path("__reload__/", include("django_browser_reload.urls")),
     path("dashboard/", user_dashboard, name="user_dashboard"),

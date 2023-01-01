@@ -22,3 +22,4 @@ openapi==1.1.0
 prometheus-client==0.15
 psycopg2-binary==2.9.5
 redis==4.4.0
+django-guardian

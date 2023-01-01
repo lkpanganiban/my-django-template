@@ -46,11 +46,12 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "rest_framework_tracking",
     # 'django_prometheus',
-    "django_elasticsearch_dsl",
-    "django_elasticsearch_dsl_drf",
+    # "django_elasticsearch_dsl",
+    # "django_elasticsearch_dsl_drf",
     "oauth2_provider",
     "corsheaders",
-    # "django_browser_reload",
+    "guardian",
+    "django_browser_reload",
 ]
 
 CORE_APPS = [
@@ -62,6 +63,11 @@ PLUGIN_APPS = []
 CUSTOM_APPS = []
 
 INSTALLED_APPS = INSTALLED_APPS + CORE_APPS + CUSTOM_APPS + PLUGIN_APPS
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'guardian.backends.ObjectPermissionBackend',
+)
 
 MIDDLEWARE = [
     "django_prometheus.middleware.PrometheusBeforeMiddleware",
@@ -105,7 +111,7 @@ CACHES = {
 }
 
 # Celery Broker
-CELERY_BROKER = os.environ.get("REDIS_BROKER", "redis://localhost:6379")
+CELERY_BROKER = f'redis://{os.environ.get("REDIS_BROKER", "localhost:6379")}'
 CELERY_BROKER_URL = CELERY_BROKER
 CELERY_RESULT_BACKEND = CELERY_BROKER
 CELERY_ACCEPT_CONTENT = ["application/json"]
@@ -274,6 +280,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "files")
 MEDIA_URL = "/uploaded/"
 
 # ELASTICSEARCH
-ELASTICSEARCH_DSL = {
-    "default": {"hosts": os.environ.get("ELASTICSEARCH_URL", "localhost:9200")},
-}
+# ELASTICSEARCH_DSL = {
+#     "default": {"hosts": os.environ.get("ELASTICSEARCH_URL", "localhost:9200")},
+# }

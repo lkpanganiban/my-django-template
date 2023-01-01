@@ -10,12 +10,12 @@ from django_elasticsearch_dsl_drf.filter_backends import (
     OrderingFilterBackend,
     FilteringFilterBackend,
 )
-from django_elasticsearch_dsl_drf.viewsets import BaseDocumentViewSet
+# from django_elasticsearch_dsl_drf.viewsets import BaseDocumentViewSet
 from rest_framework_tracking.mixins import LoggingMixin
 from apps.core.users.models import Subscriptions
 from .models import Files, FileSet
-from .documents import FilesDocument
-from .serializers import FilesSerializer, FilesDocumentSerializer, FileSetSerializer
+# from .documents import FilesDocument
+from .serializers import FilesSerializer, FileSetSerializer
 from .actions import assign_moderator_permissions, merge_sets, assign_moderator_permissions
 
 
@@ -99,32 +99,32 @@ class FileViewset(LoggingMixin, viewsets.ReadOnlyModelViewSet):
             return qs.filter(file_set__subscription__in=request_user_group)
 
 
-class FileSearchViewset(LoggingMixin, BaseDocumentViewSet):
-    document = FilesDocument
-    serializer_class = FilesDocumentSerializer
-    permission_classes = (permissions.IsAuthenticated,)
-    lookup_field = "id"
-    renderer_classes = [renderers.JSONRenderer]
+# class FileSearchViewset(LoggingMixin, BaseDocumentViewSet):
+#     document = FilesDocument
+#     serializer_class = FilesDocumentSerializer
+#     permission_classes = (permissions.IsAuthenticated,)
+#     lookup_field = "id"
+#     renderer_classes = [renderers.JSONRenderer]
 
-    filter_backends = [
-        FilteringFilterBackend,
-        OrderingFilterBackend,
-        DefaultOrderingFilterBackend,
-        CompoundSearchFilterBackend,
-    ]
-    search_fields = ("name", "file_type", "owner", "description")
+#     filter_backends = [
+#         FilteringFilterBackend,
+#         OrderingFilterBackend,
+#         DefaultOrderingFilterBackend,
+#         CompoundSearchFilterBackend,
+#     ]
+#     search_fields = ("name", "file_type", "owner", "description")
 
-    ordering_fields = {"owner": "owner.raw", "file_type": "file_type.raw"}
-    ordering = ("_score",)
+#     ordering_fields = {"owner": "owner.raw", "file_type": "file_type.raw"}
+#     ordering = ("_score",)
 
-    filter_fields = {
-        "id": "id",
-        "name": "name",
-        "file_type": "file_type",
-        "owner": "owner",
-        "location": "location",
-        "file_set": "file_set",
-    }
-    def should_log(self, request, response):
-        """Log only errors"""
-        return response.status_code >= 400
+#     filter_fields = {
+#         "id": "id",
+#         "name": "name",
+#         "file_type": "file_type",
+#         "owner": "owner",
+#         "location": "location",
+#         "file_set": "file_set",
+#     }
+#     def should_log(self, request, response):
+#         """Log only errors"""
+#         return response.status_code >= 400

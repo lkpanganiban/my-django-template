@@ -72,28 +72,27 @@ services:
       - postgres_data_prod:/var/lib/postgresql/data/
     env_file:
       - ./.env-db.prod
-
-  elasticsearch:
-    build:
-      context: docker-elk/elasticsearch/
-      args:
-        ELK_VERSION: $ELK_VERSION
-    volumes:
-      - ./docker-elk/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro,z
-      - elasticsearch:/usr/share/elasticsearch/data:z
-    ports:
-      - "9200:9200"
-      - "9300:9300"
-    environment:
-      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
-      ELASTIC_PASSWORD: changeme
-      # Use single node discovery in order to disable production mode and avoid bootstrap checks.
-      # see: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
-      discovery.type: single-node
+  # elasticsearch:
+  #   build:
+  #     context: docker-elk/elasticsearch/
+  #     args:
+  #       ELK_VERSION: $ELK_VERSION
+  #   volumes:
+  #     - ./docker-elk/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro,z
+  #     - elasticsearch:/usr/share/elasticsearch/data:z
+  #   ports:
+  #     - "9200:9200"
+  #     - "9300:9300"
+  #   environment:
+  #     ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+  #     ELASTIC_PASSWORD: changeme
+  #     # Use single node discovery in order to disable production mode and avoid bootstrap checks.
+  #     # see: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
+  #     discovery.type: single-node
 
 volumes:
   postgres_data_prod:
   redis_data_prod:
-  log_data_prod:
-  elasticsearch:
+  log_data_prod: # elasticsearch:
+
   static_data_prod:
