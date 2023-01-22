@@ -45,14 +45,29 @@ INSTALLED_APPS = [
     "rest_framework_json_api",
     "rest_framework.authtoken",
     "rest_framework_tracking",
-    # 'django_prometheus',
-    # "django_elasticsearch_dsl",
-    # "django_elasticsearch_dsl_drf",
     "oauth2_provider",
     "corsheaders",
     "guardian",
     "django_browser_reload",
 ]
+
+# ELASTICSEARCH
+if int(os.environ.get("ELASTICSEARCH",0)):
+    INSTALLED_APPS += [
+        "django_elasticsearch_dsl",
+        "django_elasticsearch_dsl_drf",
+    ]
+    ELASTICSEARCH_DSL = {
+        "default": {"hosts": os.environ.get("ELASTICSEARCH_URL", "localhost:9200")},
+    }
+
+if int(os.environ.get("PROMETHEUS",0)):
+    INSTALLED_APPS += [
+        'django_prometheus'
+    ]
+    PROMETHEUS_BEFORE_MIDDLEWARE = ["django_prometheus.middleware.PrometheusBeforeMiddleware"]
+    PROMETHEUS_AFTER_MIDDLEWARE = ["django_prometheus.middleware.PrometheusAfterMiddleware",]
+
 
 CORE_APPS = [
     "apps.core.users",
@@ -70,7 +85,6 @@ AUTHENTICATION_BACKENDS = (
 )
 
 MIDDLEWARE = [
-    "django_prometheus.middleware.PrometheusBeforeMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",
@@ -80,8 +94,10 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django_browser_reload.middleware.BrowserReloadMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "django_prometheus.middleware.PrometheusAfterMiddleware",
 ]
+
+if int(os.environ.get("PROMETHEUS",0)):
+    MIDDLEWARE = PROMETHEUS_BEFORE_MIDDLEWARE + MIDDLEWARE + PROMETHEUS_AFTER_MIDDLEWARE
 
 ROOT_URLCONF = "django_app.urls"
 
@@ -279,7 +295,3 @@ DEFAULT_FILE_STORAGE = os.environ.get(
 MEDIA_ROOT = os.path.join(BASE_DIR, "files")
 MEDIA_URL = "/uploaded/"
 
-# ELASTICSEARCH
-# ELASTICSEARCH_DSL = {
-#     "default": {"hosts": os.environ.get("ELASTICSEARCH_URL", "localhost:9200")},
-# }
