@@ -67,6 +67,17 @@ services:
     depends_on:
       - django_shared_task_worker
       - django_long_task_worker
+  minio:
+    image: minio/minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    env_file:
+      - ./.env.dev
+    command: server --console-address ":9001" /data
+
   # prometheus:
   #   container_name: prometheus
   #   image: prom/prometheus
@@ -124,4 +135,5 @@ volumes:
   postgres_data:
   redis_data:
   log_data:
+  minio_data:
   # elasticsearch:

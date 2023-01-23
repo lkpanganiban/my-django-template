@@ -12,7 +12,7 @@ A reference repo for my Django Projects
 - Prometheus
 - Nginx
 - PostgreSQL
-- Ansible
+- Minio
 
 ## Sample Modules
 1. Upload
