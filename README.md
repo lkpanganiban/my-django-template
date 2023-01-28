@@ -35,3 +35,6 @@ A reference repo for my Django Projects
    - reference repo came from https://github.com/dotja/django-prometheus-docker
    - refer to the following link: https://www.youtube.com/watch?v=86js4POzTV4
 
+## TODO:
+- Integrate file upload with Minio
+- Integrate file CRUD ops with Minio
