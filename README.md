@@ -6,13 +6,16 @@ A reference repo for my Django Projects
 - Redis
 - Celery
 - Elasticsearch
+- Nginx
+- PostgreSQL
+- Minio
+- Gunicorn
+
+### Optional services
 - Kibana
 - Logstash
 - Filebeat
 - Prometheus
-- Nginx
-- PostgreSQL
-- Minio
 
 ## Sample Modules
 1. Upload
@@ -38,3 +41,4 @@ A reference repo for my Django Projects
 ## TODO:
 - Integrate file upload with Minio
 - Integrate file CRUD ops with Minio
+- Add type hints / annotations to customized code
