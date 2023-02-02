@@ -42,3 +42,4 @@ A reference repo for my Django Projects
 - Integrate file upload with Minio
 - Integrate file CRUD ops with Minio
 - Add type hints / annotations to customized code
+- 
