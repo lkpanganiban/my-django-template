@@ -21,6 +21,7 @@ jobs:
         image: redis:alpine3.17
 
     steps:
+    - uses: actions/checkout@v3
     - name: Set up Python 3.8.13
       uses: actions/setup-python@v4
       with:
