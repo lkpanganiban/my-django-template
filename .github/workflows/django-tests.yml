@@ -1,0 +1,40 @@
+name: Django CI
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    services:
+      django_db:
+        image: postgres:13.5-alpine
+        env:
+          POSTGRES_DB: ${{ secrets.SQL_DATABASE }}
+          POSTGRES_USER: ${{ secrets.SQL_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.SQL_PASSWORD }}
+        ports:
+          - 5432:5432
+
+      django_redis_queue:
+        image: redis:alpine3.17
+
+      django_redis_cache:
+        image: redis:alpine3.17
+
+    steps:
+    - name: Set up Python 3.8.13
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.8.13'
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Run Tests
+      env:
+        DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+        POSTGRES_HOST: ${{ secrets.SQL_HOST }}
+        POSTGRES_DB: ${{ secrets.SQL_DATABASE }}
+        POSTGRES_USER: ${{ secrets.SQL_USER }}
+        POSTGRES_PASSWORD: ${{ secrets.SQL_PASSWORD }}
+      run: |
+        python manage.py test
