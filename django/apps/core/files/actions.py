@@ -72,7 +72,7 @@ def fetch_fileset_moderator_permissions(user) -> FileSet:
     return get_objects_for_user(user, "can_moderate_files", FileSet.objects.all())
 
 
-def add_moderator_permission_to_moderators(fs: FileSet) -> None:
+def add_moderator_permission_to_moderators(fs: FileSet, moderator: User) -> None:
     """
     apply moderator permissions to a fileset
     """
