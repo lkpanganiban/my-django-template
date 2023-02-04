@@ -194,7 +194,7 @@ LOGGING = {
         "default": {
             "level": "DEBUG",
             "class": "logging.handlers.RotatingFileHandler",
-            "filename": "/var/log/django-app/app.log",
+            "filename": LOGGING_PATH,
             "maxBytes": 1024 * 1024 * 20,  # 20 MB,
             "backupCount": 2,
             "formatter": "json",
@@ -204,7 +204,7 @@ LOGGING = {
             "class": "logging.handlers.RotatingFileHandler",
             "maxBytes": 1024 * 1024 * 20,  # 20 MB,
             "backupCount": 2,
-            "filename": "/var/log/django-app/requestlogs.log",
+            "filename": REQUESTS_LOGGING_PATH,
         },
     },
     "root": {"handlers": ["default"], "level": "DEBUG"},
