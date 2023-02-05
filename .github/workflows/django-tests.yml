@@ -34,10 +34,10 @@ jobs:
     - name: Run Tests
       env:
         DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
-        POSTGRES_HOST: ${{ secrets.SQL_HOST }}
-        POSTGRES_DB: ${{ secrets.SQL_DATABASE }}
-        POSTGRES_USER: ${{ secrets.SQL_USER }}
-        POSTGRES_PASSWORD: ${{ secrets.SQL_PASSWORD }}
+        SQL_HOST: ${{ secrets.SQL_HOST }}
+        SQL_DB: ${{ secrets.SQL_DATABASE }}
+        SQL_USER: ${{ secrets.SQL_USER }}
+        SQL_PASSWORD: ${{ secrets.SQL_PASSWORD }}
       run: |
         cd django
         python manage.py test
