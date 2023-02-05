@@ -23,7 +23,7 @@ jobs:
       django_redis_cache:
         image: redis:alpine3.17
         ports:
-          - 6379:6379
+          - 6380:6379
 
     steps:
     - uses: actions/checkout@v3
