@@ -52,7 +52,7 @@ INSTALLED_APPS = [
 ]
 
 # ELASTICSEARCH
-if int(os.environ.get("ELASTICSEARCH",0)):
+if int(os.environ.get("ELASTICSEARCH", 0)):
     INSTALLED_APPS += [
         "django_elasticsearch_dsl",
         "django_elasticsearch_dsl_drf",
@@ -61,12 +61,14 @@ if int(os.environ.get("ELASTICSEARCH",0)):
         "default": {"hosts": os.environ.get("ELASTICSEARCH_URL", "localhost:9200")},
     }
 
-if int(os.environ.get("PROMETHEUS",0)):
-    INSTALLED_APPS += [
-        'django_prometheus'
+if int(os.environ.get("PROMETHEUS", 0)):
+    INSTALLED_APPS += ["django_prometheus"]
+    PROMETHEUS_BEFORE_MIDDLEWARE = [
+        "django_prometheus.middleware.PrometheusBeforeMiddleware"
     ]
-    PROMETHEUS_BEFORE_MIDDLEWARE = ["django_prometheus.middleware.PrometheusBeforeMiddleware"]
-    PROMETHEUS_AFTER_MIDDLEWARE = ["django_prometheus.middleware.PrometheusAfterMiddleware",]
+    PROMETHEUS_AFTER_MIDDLEWARE = [
+        "django_prometheus.middleware.PrometheusAfterMiddleware",
+    ]
 
 
 CORE_APPS = [
@@ -80,8 +82,8 @@ CUSTOM_APPS = []
 INSTALLED_APPS = INSTALLED_APPS + CORE_APPS + CUSTOM_APPS + PLUGIN_APPS
 
 AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend',
-    'guardian.backends.ObjectPermissionBackend',
+    "django.contrib.auth.backends.ModelBackend",
+    "guardian.backends.ObjectPermissionBackend",
 )
 
 MIDDLEWARE = [
@@ -96,7 +98,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-if int(os.environ.get("PROMETHEUS",0)):
+if int(os.environ.get("PROMETHEUS", 0)):
     MIDDLEWARE = PROMETHEUS_BEFORE_MIDDLEWARE + MIDDLEWARE + PROMETHEUS_AFTER_MIDDLEWARE
 
 ROOT_URLCONF = "django_app.urls"
@@ -114,7 +116,7 @@ DATABASES = {
         "USER": os.environ.get("SQL_USER"),
         "PASSWORD": os.environ.get("SQL_PASSWORD"),
         "HOST": os.environ.get("SQL_HOST", "django_db"),
-        "PORT": os.environ.get("SQL_PORT", 5432),
+        "PORT": os.environ.get("SQL_PORT", "5432"),
     }
 }
 
@@ -294,4 +296,3 @@ DEFAULT_FILE_STORAGE = os.environ.get(
 )
 MEDIA_ROOT = os.path.join(BASE_DIR, "files")
 MEDIA_URL = "/uploaded/"
-

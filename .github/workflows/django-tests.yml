@@ -36,7 +36,7 @@ jobs:
       env:
         DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
         SQL_HOST: ${{ secrets.SQL_HOST }}
-        SQL_DB: ${{ secrets.SQL_DATABASE }}
+        SQL_DATABASE: ${{ secrets.SQL_DATABASE }}
         SQL_USER: ${{ secrets.SQL_USER }}
         SQL_PASSWORD: ${{ secrets.SQL_PASSWORD }}
       run: |
