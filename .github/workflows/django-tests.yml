@@ -38,7 +38,7 @@ jobs:
     - name: Run Tests
       env:
         DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
-        SQL_HOST: postgres
+        SQL_HOST: localhost
         SQL_DATABASE: ${{ secrets.SQL_DATABASE }}
         SQL_USER: ${{ secrets.SQL_USER }}
         SQL_PASSWORD: ${{ secrets.SQL_PASSWORD }}
