@@ -5,7 +5,7 @@ jobs:
   build:
     runs-on: ubuntu-20.04
     services:
-      django_db:
+      postgres:
         image: postgres:13.5-alpine
         env:
           POSTGRES_DB: ${{ secrets.SQL_DATABASE }}
@@ -35,7 +35,7 @@ jobs:
     - name: Run Tests
       env:
         DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
-        SQL_HOST: django_db
+        SQL_HOST: postgres
         SQL_DATABASE: ${{ secrets.SQL_DATABASE }}
         SQL_USER: ${{ secrets.SQL_USER }}
         SQL_PASSWORD: ${{ secrets.SQL_PASSWORD }}
