@@ -1,8 +1,7 @@
-import time
 from django.dispatch import receiver
 
 from django.db.models.signals import post_save
-from .models import FileSet, Files
+from .models import FileSet
 from .actions import add_moderator_permission_to_moderators
 
 @receiver(post_save, sender=FileSet)
