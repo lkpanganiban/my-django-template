@@ -52,7 +52,7 @@ INSTALLED_APPS = [
 ]
 
 # ELASTICSEARCH
-if int(os.environ.get("ELASTICSEARCH",0)):
+if int(os.environ.get("ELASTICSEARCH", 0)):
     INSTALLED_APPS += [
         "django_elasticsearch_dsl",
         "django_elasticsearch_dsl_drf",
@@ -61,12 +61,14 @@ if int(os.environ.get("ELASTICSEARCH",0)):
         "default": {"hosts": os.environ.get("ELASTICSEARCH_URL", "localhost:9200")},
     }
 
-if int(os.environ.get("PROMETHEUS",0)):
-    INSTALLED_APPS += [
-        'django_prometheus'
+if int(os.environ.get("PROMETHEUS", 0)):
+    INSTALLED_APPS += ["django_prometheus"]
+    PROMETHEUS_BEFORE_MIDDLEWARE = [
+        "django_prometheus.middleware.PrometheusBeforeMiddleware"
     ]
-    PROMETHEUS_BEFORE_MIDDLEWARE = ["django_prometheus.middleware.PrometheusBeforeMiddleware"]
-    PROMETHEUS_AFTER_MIDDLEWARE = ["django_prometheus.middleware.PrometheusAfterMiddleware",]
+    PROMETHEUS_AFTER_MIDDLEWARE = [
+        "django_prometheus.middleware.PrometheusAfterMiddleware",
+    ]
 
 
 CORE_APPS = [
@@ -80,8 +82,8 @@ CUSTOM_APPS = []
 INSTALLED_APPS = INSTALLED_APPS + CORE_APPS + CUSTOM_APPS + PLUGIN_APPS
 
 AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend',
-    'guardian.backends.ObjectPermissionBackend',
+    "django.contrib.auth.backends.ModelBackend",
+    "guardian.backends.ObjectPermissionBackend",
 )
 
 MIDDLEWARE = [
@@ -96,7 +98,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-if int(os.environ.get("PROMETHEUS",0)):
+if int(os.environ.get("PROMETHEUS", 0)):
     MIDDLEWARE = PROMETHEUS_BEFORE_MIDDLEWARE + MIDDLEWARE + PROMETHEUS_AFTER_MIDDLEWARE
 
 ROOT_URLCONF = "django_app.urls"
@@ -110,11 +112,11 @@ WSGI_APPLICATION = "django_app.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": os.environ.get("SQL_DATABASE"),
+        "NAME": os.environ.get("SQL_DATABASE", "sample_db_dev"),
         "USER": os.environ.get("SQL_USER"),
         "PASSWORD": os.environ.get("SQL_PASSWORD"),
-        "HOST": os.environ.get("SQL_HOST"),
-        "PORT": os.environ.get("SQL_PORT"),
+        "HOST": os.environ.get("SQL_HOST", "django_db"),
+        "PORT": os.environ.get("SQL_PORT", "5432"),
     }
 }
 
@@ -122,7 +124,7 @@ DATABASES = {
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": f'redis://{os.environ.get("REDIS_CACHED")}',
+        "LOCATION": f'redis://{os.environ.get("REDIS_CACHED", "localhost:6380")}',
     }
 }
 
@@ -194,7 +196,7 @@ LOGGING = {
         "default": {
             "level": "DEBUG",
             "class": "logging.handlers.RotatingFileHandler",
-            "filename": "/var/log/django-app/app.log",
+            "filename": LOGGING_PATH,
             "maxBytes": 1024 * 1024 * 20,  # 20 MB,
             "backupCount": 2,
             "formatter": "json",
@@ -204,7 +206,7 @@ LOGGING = {
             "class": "logging.handlers.RotatingFileHandler",
             "maxBytes": 1024 * 1024 * 20,  # 20 MB,
             "backupCount": 2,
-            "filename": "/var/log/django-app/requestlogs.log",
+            "filename": REQUESTS_LOGGING_PATH,
         },
     },
     "root": {"handlers": ["default"], "level": "DEBUG"},
@@ -294,4 +296,3 @@ DEFAULT_FILE_STORAGE = os.environ.get(
 )
 MEDIA_ROOT = os.path.join(BASE_DIR, "files")
 MEDIA_URL = "/uploaded/"
-
