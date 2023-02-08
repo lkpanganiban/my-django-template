@@ -8,8 +8,9 @@ router = DefaultRouter()
 router.register(r"api/set", FileSetViewset, basename="set")
 router.register(r"api", FileViewset, basename="files")
 
-if int(os.environ.get("ELASTICSEARCH",0)):
+if int(os.environ.get("ELASTICSEARCH", 0)):
     from .api import FileSearchViewset
+
     router.register(r"api/search", FileSearchViewset, basename="files-search")
 
 
