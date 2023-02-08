@@ -60,6 +60,7 @@ class FileAppTest(APITestCase):
         file_serializer = FilesSerializer(data=file_data)
         file_serializer.is_valid()
         file_serializer.save()
+        f.close()
         return file_serializer
 
     def setUp(self):

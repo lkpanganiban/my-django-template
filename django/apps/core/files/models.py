@@ -1,12 +1,7 @@
 import uuid
-from datetime import datetime, timezone
 from django.db import models
 from django.contrib.auth.models import User
 from apps.core.users.models import Subscriptions
-
-
-def get_time_now():
-    return datetime.now(timezone.utc)
 
 
 class FileSet(models.Model):
@@ -39,12 +34,15 @@ class FileSet(models.Model):
         return self.subscription.owner.email
 
     def has_subscription_access(self, subscription=None):
-        if subscription.status: return self.subscription == subscription
+        if subscription.status:
+            return self.subscription == subscription
         return False
-    
+
     def has_moderator_access(self, user=None):
-        if user is None: return False
-        return user.has_perm('can_moderate_files', self)
+        if user is None:
+            return False
+        return user.has_perm("can_moderate_files", self)
+
 
 class Files(models.Model):
     """
@@ -75,14 +73,16 @@ class Files(models.Model):
         return self.file_set.subscription.owner.email
 
     def has_subscription_access(self, subscription=None):
-        if subscription.status: return self.file_set.subscription == subscription
+        if subscription.status:
+            return self.file_set.subscription == subscription
         return False
 
     def _pre_process_file_attributes(self):
         try:
             self.file_type = self.location.path.split(".")[-1]
             self.file_size = self.location.size
-        except: pass
+        except:
+            pass
 
     def save(self, *args, **kwargs):
         if kwargs.get("force_insert") is not None:  # handle first insert to db
