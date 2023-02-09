@@ -3,18 +3,19 @@ from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from .models import Profile, Subscriptions
 
+
 # Register your models here.
 class ProfileInline(admin.StackedInline):
-
     model = Profile
     can_delete = False
     verbose_name_plural = "Profile"
 
-class SubscriptionsInline(admin.StackedInline):
 
+class SubscriptionsInline(admin.StackedInline):
     model = Subscriptions
     can_delete = False
     verbose_name_plural = "Subscriptions"
+
 
 class UserAdmin(BaseUserAdmin):
     list_display = (
@@ -24,7 +25,10 @@ class UserAdmin(BaseUserAdmin):
         "is_staff",
         "is_active",
     )
-    inlines = (ProfileInline, SubscriptionsInline,)
+    inlines = (
+        ProfileInline,
+        SubscriptionsInline,
+    )
 
 
 class ProfileAdmin(admin.ModelAdmin):
@@ -44,6 +48,7 @@ class ProfileAdmin(admin.ModelAdmin):
 
 class SubscriptionsAdmin(admin.ModelAdmin):
     pass
+
 
 admin.site.register(Subscriptions, SubscriptionsAdmin)
 

@@ -13,6 +13,7 @@ from .actions import (
     fetch_fileset_moderator_permissions,
 )
 
+
 # Create your tests here.
 class FileAppTest(APITestCase):
     def _create_user(self, email="hello@example.com"):

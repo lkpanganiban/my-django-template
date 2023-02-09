@@ -7,6 +7,7 @@ from apps.core.users.models import User, Profile, Subscriptions
 from apps.core.users.serializers import RegisterSerializer
 from .tasks import send_registration_email, check_expiry
 
+
 # Create your tests here.
 class UserAppTest(APITestCase):
     def setUp(self):
