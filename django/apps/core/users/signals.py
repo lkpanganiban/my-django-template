@@ -8,7 +8,8 @@ from .tasks import send_registration_email
 
 @receiver(post_save, sender=User)
 def create_token(sender, instance=None, created=False, **kwargs):
-    if created: Token.objects.create(user=instance)
+    if created:
+        Token.objects.create(user=instance)
 
 
 @receiver(post_save, sender=User)
@@ -17,9 +18,7 @@ def create_profile(sender, instance, created=False, **kwargs):
         profile = Profile.objects.create(user=instance)
         group, created = Group.objects.get_or_create(name=instance.email)
         group.user_set.add(instance)
-        subscription = Subscriptions.objects.create(
-            owner=instance
-        )
+        subscription = Subscriptions.objects.create(owner=instance)
         subscription.user_subscriptions.add(instance)
         subscription.save()
         send_registration_email.delay(

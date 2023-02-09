@@ -10,7 +10,9 @@ logger = get_task_logger(__name__)
 
 
 @shared_task
-def send_registration_email(first_name: str, account_expiry:datetime, user_email: str) -> str:
+def send_registration_email(
+    first_name: str, account_expiry: datetime, user_email: str
+) -> str:
     logger.info(f"sending registration email to {user_email}")
     from_email = settings.DEFAULT_FROM_EMAIL
     bcc_email = [settings.EMAIL_REGISTRATION_BCC]
