@@ -47,10 +47,8 @@ jobs:
         python manage.py test
     - name: Obfuscate
       run: |
-        cd ../
         pip install pyarmor
         mkdir dist
-        ls -a
         cp -a django/* dist/
         cd django/apps/
         pyarmor obfuscate --src="." -r --output=../../dist/apps/ __init__.py
