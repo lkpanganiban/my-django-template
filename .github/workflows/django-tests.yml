@@ -45,3 +45,11 @@ jobs:
       run: |
         cd django
         python manage.py test
+    - name: Obfuscate
+      run: |
+        pip install pyarmor
+        mkdir dist
+        cp -a django/* dist/
+        cd django/apps/
+        pyarmor obfuscate --src="." -r --output=../../dist/apps/ __init__.py
+        cat ../../dist/apps/core/files/api.py
