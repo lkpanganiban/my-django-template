@@ -42,15 +42,15 @@ services:
       - ./django/:/usr/src/app/
   django_redis_cache:
     container_name: django_redis_cache
-    image: "redis:alpine3.17"
+    image: redis:6.0.20-alpine3.18
   django_redis_queue:
     container_name: django_redis_queue
-    image: "redis:alpine3.17"
+    image: redis:6.0.20-alpine3.18
     volumes:
       - redis_data:/data
   django_db:
     container_name: django_db
-    image: postgres:13.5-alpine
+    image: postgres:15.4-alpine3.18
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
